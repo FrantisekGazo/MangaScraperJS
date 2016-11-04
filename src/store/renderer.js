@@ -6,9 +6,14 @@ const reducer = require('../reducer');
 
 let enhancer;
 if (process.env.NODE_ENV === 'development') {
-    let logger = require('redux-logger');
+    const logger = require('redux-logger');
+    const { composeWithDevTools } = require('redux-devtools-extension');
 
-    enhancer = compose(
+    const composeEnhancers = composeWithDevTools({
+        // Specify here name, actionsBlacklist, actionsCreators and other options
+    });
+
+    enhancer = composeEnhancers(
         applyMiddleware(thunkMiddleware, logger())
     );
 } else { // production

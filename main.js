@@ -10,6 +10,15 @@ function createWindow() {
 
     if (process.env.NODE_ENV === 'development') {
         mainWindow.loadURL('file://' + __dirname + '/src/index.html');
+
+        const tools = require('electron-devtools-installer');
+        const installExtension = tools.default;
+        const { REDUX_DEVTOOLS } = tools;
+
+        installExtension(REDUX_DEVTOOLS)
+            .then((name) => console.log(`Added Extension:  ${name}`))
+            .catch((err) => console.log('An error occurred: ', err));
+
         mainWindow.webContents.openDevTools();
     } else {
         mainWindow.loadURL('file://' + __dirname + '/dist/index.html');
