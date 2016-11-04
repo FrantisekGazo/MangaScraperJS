@@ -1,7 +1,9 @@
 const actions = require('../actions/counterActions');
 
 
-module.exports = function counter(state, action) {
+const initialState = 0;
+
+module.exports = function counter(state=initialState, action) {
     state = state || 0;
     switch (action.type) {
         case actions.INCREMENT:
