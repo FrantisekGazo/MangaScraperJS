@@ -6,6 +6,6 @@ const Counter = require('../components/Counter.jsx');
 const increment = require('../../actions/counterActions').increment;
 
 module.exports = connect(
-    state => ({counter: state}),
+    state => ({counter: state.counter}),
     {increment}
 )(Counter);
