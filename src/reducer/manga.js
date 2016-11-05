@@ -6,7 +6,7 @@ const initialState = {
     chapters: []
 };
 
-module.exports = function counter(state=initialState, action) {
+module.exports = (state=initialState, action) => {
     switch (action.type) {
         case actions.MANGA_SELECTED:
             return Object.assign({}, state, {
