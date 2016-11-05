@@ -1,8 +1,9 @@
 const { combineReducers } = require("redux");
 
-const manga = require("./manga");
+const { selected, mangaLibrary } = require("./manga");
 
 
 module.exports = combineReducers({
-    manga
+    selected,
+    mangaLibrary
 });
