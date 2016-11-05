@@ -2,22 +2,24 @@
 
 const React = require('react');
 
-/**
- * @type {MangaLayout}
- *
- * expects: manga
- */
-module.exports = class MangaLayout extends React.Component {
+const ChapterList = require('./ChapterList.jsx');
 
-    constructor(props) {
-        super(props);
-    }
 
-    render() {
-        return (
-            <div>
-                <h2>{this.props.manga.name}</h2>
-            </div>
-        );
-    }
+const MangaLayout = ({title, chapters}) => {
+    return <div>
+        <h2>{title}</h2>
+        <ChapterList chapters={chapters}/>
+    </div>
 };
+
+MangaLayout.propTypes = {
+    title: React.PropTypes.string.isRequired,
+    chapters: React.PropTypes.arrayOf(
+        React.PropTypes.shape({
+            id: React.PropTypes.number.isRequired,
+            title: React.PropTypes.string.isRequired
+        }).isRequired
+    ).isRequired,
+};
+
+module.exports = MangaLayout;

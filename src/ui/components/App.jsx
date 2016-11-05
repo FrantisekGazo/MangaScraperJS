@@ -4,7 +4,7 @@ const React = require('react');
 
 const Counter = require('./Counter.jsx');
 const MangaSelector = require('../containers/MangaSelector.jsx');
-const MangaLayout = require('../containers/MangaLayout.jsx');
+const CurrentManga = require('../containers/CurrentManga.jsx');
 
 
 module.exports = class App extends React.Component {
@@ -13,7 +13,7 @@ module.exports = class App extends React.Component {
         return <div>
             <Counter counter={this.props.counter} increment={this.props.increment}/>
             <MangaSelector />
-            <MangaLayout />
+            <CurrentManga />
         </div>
     }
 };
