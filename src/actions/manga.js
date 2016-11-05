@@ -82,31 +82,22 @@ const downloadChapters = () => {
         const mangaId = getState().selected;
         const manga = getState().mangaLibrary[mangaId];
 
-        let download = manga.chapters.filter(chapter => chapter.checked);
+        let downloadChapters = manga.chapters.filter(chapter => chapter.checked);
 
-        if (download.length > 0) {
-            const { remote } = require('electron');
-
-            remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
-                properties: ['createDirectory', 'openDirectory']
-            }, (dirPaths) => {
-                if (dirPaths && dirPaths[0]) {
-                    const outDirPath = dirPaths[0];
-
-                    console.log(outDirPath);
-
-                    let i;
-                    for (i = 0; i < download.length; i++) {
-                        const chapter = download[i];
-                        console.log(chapter.url);
-                    }
-
-                    return createAction(Actions.DOWNLOAD_CHAPTERS, mangaId);
-                }
-            });
-        } else {
+        if (downloadChapters.length == 0) {
             return Promise.resolve();
         }
+
+        const {showSaveDirDialog} = require('../service/dialog.js');
+        const {downloadMangaChapters} = require('../service/manga.js');
+
+        return showSaveDirDialog()
+            .then((dirPath) => {
+                return downloadMangaChapters(downloadChapters, dirPath);
+            })
+            .catch((err) => {
+                console.log('Download failed:', err);
+            });
     }
 };
 
