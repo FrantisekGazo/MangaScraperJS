@@ -3,12 +3,20 @@
 const React = require('react');
 
 const ChapterList = require('./ChapterList.jsx');
+const Loader = require('./Loader.jsx');
 
 
-const MangaLayout = ({manga}) => {
+const MangaLayout = ({manga, onChapterClick, onDownloadClick}) => {
+    if (manga.isLoading) {
+        return <Loader />
+    }
+
     return <div>
+        <br/>
+        <button onClick={onDownloadClick}>Download</button>
         <h2>{manga.title}</h2>
-        <ChapterList chapters={manga.chapters}/>
+        <img src={manga.image}/>
+        <ChapterList chapters={manga.chapters} onChapterClick={onChapterClick}/>
     </div>
 };
 
@@ -19,10 +27,13 @@ MangaLayout.propTypes = {
         chapters: React.PropTypes.arrayOf(
             React.PropTypes.shape({
                 id: React.PropTypes.string.isRequired,
-                title: React.PropTypes.string.isRequired
+                title: React.PropTypes.string.isRequired,
+                date: React.PropTypes.string.isRequired
             }).isRequired
         ).isRequired
-    }).isRequired
+    }).isRequired,
+    onChapterClick: React.PropTypes.func.isRequired,
+    onDownloadClick: React.PropTypes.func.isRequired
 };
 
 module.exports = MangaLayout;

@@ -5,6 +5,8 @@ const Actions = {
     REQUEST_MANGA: 'REQUEST_MANGA',
     RECEIVE_MANGA: 'RECEIVE_MANGA',
     RECEIVE_MANGA_ERROR: 'RECEIVE_MANGA_ERROR',
+    TOGGLE_CHAPTER: 'TOGGLE_CHAPTER',
+    DOWNLOAD_CHAPTERS: 'DOWNLOAD_CHAPTERS',
 };
 
 const mangaTitleToId = (title) => {
@@ -59,7 +61,7 @@ const loadManga = (title) => {
                 let id = 0;
                 result.chapters = result.chapters.map(chapter => {
                     id += 1;
-                    return Object.assign(chapter, {id: `${id}`})
+                    return Object.assign(chapter, {id: `${mangaId}-${id}`, checked: false})
                 });
 
                 dispatch(receiveManga(mangaId, result));
@@ -70,10 +72,50 @@ const loadManga = (title) => {
     }
 };
 
+const toggleChapter = (chapterId) => {
+    const ids = chapterId.split('-');
+    return createAction(Actions.TOGGLE_CHAPTER, ids[0], chapterId);
+};
+
+const downloadChapters = () => {
+    return (dispatch, getState) => {
+        const mangaId = getState().selected;
+        const manga = getState().mangaLibrary[mangaId];
+
+        let download = manga.chapters.filter(chapter => chapter.checked);
+
+        if (download.length > 0) {
+            const { remote } = require('electron');
+
+            remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
+                properties: ['createDirectory', 'openDirectory']
+            }, (dirPaths) => {
+                if (dirPaths && dirPaths[0]) {
+                    const outDirPath = dirPaths[0];
+
+                    console.log(outDirPath);
+
+                    let i;
+                    for (i = 0; i < download.length; i++) {
+                        const chapter = download[i];
+                        console.log(chapter.url);
+                    }
+
+                    return createAction(Actions.DOWNLOAD_CHAPTERS, mangaId);
+                }
+            });
+        } else {
+            return Promise.resolve();
+        }
+    }
+};
+
 
 module.exports = {
     Actions,
-    loadManga
+    loadManga,
+    toggleChapter,
+    downloadChapters
 };
 
 /*

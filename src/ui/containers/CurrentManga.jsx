@@ -4,6 +4,7 @@ const React = require('react');
 const {connect} = require('react-redux');
 
 const MangaLayout = require('../components/MangaLayout.jsx');
+const {toggleChapter, downloadChapters} = require('../../actions/manga');
 
 
 const CurrentManga = connect(
@@ -15,7 +16,14 @@ const CurrentManga = connect(
     },
     // dispatch functions to props
     (dispatch) => {
-        return {}
+        return {
+            onChapterClick: (chapterId) => {
+                dispatch(toggleChapter(chapterId))
+            },
+            onDownloadClick: () => {
+                dispatch(downloadChapters())
+            }
+        }
     }
 )(MangaLayout);
 

@@ -30,6 +30,20 @@ const manga = (state = mangaInitState, action) => {
                 isLoading: false,
                 lastUpdated: Date.now()
             });
+        case Actions.TOGGLE_CHAPTER:
+            let newState = Object.assign({}, state);
+            newState.chapters = state.chapters.slice();
+
+            var i = 0;
+            for (i = 0; i < newState.chapters.length; i++) {
+                const chapter = newState.chapters[i];
+                if (chapter.id == action.payload) {
+                    newState.chapters[i] = Object.assign({}, chapter, {checked: !chapter.checked});
+                    break;
+                }
+            }
+
+            return newState;
         default:
             return state
     }
@@ -48,6 +62,7 @@ const mangaLibrary = (state = mangaLibaryInitState, action) => {
             }
         case Actions.REQUEST_MANGA:
         case Actions.RECEIVE_MANGA:
+        case Actions.TOGGLE_CHAPTER:
             return Object.assign({}, state, {
                 [action.mangaId]: manga(state[action.mangaId], action)
             });
