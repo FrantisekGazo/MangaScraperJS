@@ -1,48 +1,33 @@
 const {Actions} = require('../actions/manga');
 
 
-const selectedInitState = {
-    title: '',
-    error: ''
-};
+const selectedInitState = '';
 const selected = (state = selectedInitState, action) => {
     switch (action.type) {
         case Actions.SELECT_MANGA:
-            return Object.assign({}, state, {
-                title: action.manga
-            });
-        case Actions.SELECT_MANGA_ERROR:
-            return Object.assign({}, state, {
-                error: action.payload
-            });
+            return action.mangaId;
         default:
-            return state
+            return state;
     }
 };
 
 
 const mangaInitState = {
-    isFetching: false,
-    didInvalidate: false,
+    title: '',
+    image: '',
     chapters: [],
+    isLoading: false,
     lastUpdated: 0
 };
 const manga = (state = mangaInitState, action) => {
     switch (action.type) {
-        case Actions.INVALIDATE_MANGA:
-            return Object.assign({}, state, {
-                didInvalidate: true
-            });
         case Actions.REQUEST_MANGA:
             return Object.assign({}, state, {
-                isFetching: true,
-                didInvalidate: false
+                isLoading: true
             });
         case Actions.RECEIVE_MANGA:
-            return Object.assign({}, state, {
-                isFetching: false,
-                didInvalidate: false,
-                chapters: action.payload,
+            return Object.assign({}, state, action.payload, {
+                isLoading: false,
                 lastUpdated: Date.now()
             });
         default:
@@ -54,18 +39,17 @@ const mangaLibaryInitState = {};
 const mangaLibrary = (state = mangaLibaryInitState, action) => {
     switch (action.type) {
         case Actions.SELECT_MANGA:
-            if (state[action.manga]) {
+            if (action.mangaId in state) {
                 return state
             } else {
                 return Object.assign({}, state, {
-                    [action.manga]: manga(state[action.manga], action)
+                    [action.mangaId]: manga(state[action.mangaId], action)
                 });
             }
-        case Actions.INVALIDATE_MANGA:
         case Actions.REQUEST_MANGA:
         case Actions.RECEIVE_MANGA:
             return Object.assign({}, state, {
-                [action.manga]: manga(state[action.manga], action)
+                [action.mangaId]: manga(state[action.mangaId], action)
             });
         default:
             return state

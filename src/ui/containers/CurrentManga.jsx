@@ -9,18 +9,9 @@ const MangaLayout = require('../components/MangaLayout.jsx');
 const CurrentManga = connect(
     // state to props
     (state) => {
-        const selected = state.selected.title;
-        if (selected) {
-            return Object.assign({},
-                {title: selected},
-                state.mangaLibrary[selected]
-            );
-        } else {
-            return {
-                title: '',
-                chapters: []
-            };
-        }
+        return {
+            manga: state.mangaLibrary[state.selected]
+        };
     },
     // dispatch functions to props
     (dispatch) => {

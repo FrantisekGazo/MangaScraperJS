@@ -1,3 +1,3 @@
-module.exports.createAction = function (type, manga, payload=null) {
-    return {type, manga, payload}
+module.exports.createAction = function (type, mangaId, payload=null) {
+    return {type, mangaId, payload}
 };

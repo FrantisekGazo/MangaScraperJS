@@ -16,8 +16,8 @@ const MangaSelector = connect(
     // dispatch functions to props
     (dispatch) => {
         return {
-            onSelected: (name) => {
-                dispatch(loadManga(name))
+            onSelected: (title) => {
+                dispatch(loadManga(title))
             }
         }
     }

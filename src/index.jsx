@@ -2,7 +2,7 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const {Provider} = require('react-redux');
 
-const App = require('./ui/components/App.jsx');
+const App = require('./ui/containers/App.jsx');
 const store = require('./store/renderer');
 
 

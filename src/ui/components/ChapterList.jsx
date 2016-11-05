@@ -19,7 +19,7 @@ const ChapterList = ({chapters}) => {
 ChapterList.propTypes = {
     chapters: React.PropTypes.arrayOf(
         React.PropTypes.shape({
-            id: React.PropTypes.number.isRequired,
+            id: React.PropTypes.string.isRequired,
             title: React.PropTypes.string.isRequired
         }).isRequired
     ).isRequired,
