@@ -6,12 +6,12 @@ const React = require('react');
 
 const Chapter = require('../src/ui/components/Chapter.jsx');
 
-let props = {title: 'Test Chapter 1'};
 
 describe('component', () => {
 
     it('should render text', () => {
-        const component = shallow(<Chapter title={props.title} />);
+        let chapter = {title: 'Test Chapter 1', date: 'Some date'};
+        const component = shallow(<Chapter chapter={chapter} onClick={() => {}} />);
         expect(component.text()).toInclude('Test Chapter 1');
     });
 });
