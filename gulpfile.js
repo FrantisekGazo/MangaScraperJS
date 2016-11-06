@@ -9,7 +9,7 @@ var reactify = require('reactify');
 var envify = require('envify/custom');
 var del = require('del');
 
-var gulpUglify = require('gulp-uglify/minifier');
+var minifier = require('gulp-uglify/minifier');
 var uglifyJS = require('uglify-js');
 
 gulp.task('clean', function (cb) {
@@ -30,7 +30,8 @@ gulp.task('bundle', function () {
     return b.bundle()
         .pipe(source('index.js'))
         .pipe(buffer())
-        .pipe(gulpUglify({}, uglifyJS))
+        // FIXME: if mangle is set to true, then I get "SyntaxError: Identifier 'n' has already been declared" ?!
+        .pipe(minifier({mangle: false}, uglifyJS))
         .pipe(gulp.dest('./dist/'));
 });
 
