@@ -1,4 +1,8 @@
 const {createAction} = require('./index');
+const {scrapeMangaInfo} = require('../service/scraper.js');
+const {showSaveDirDialog} = require('../service/dialog.js');
+const {downloadMangaChapters} = require('../service/manga.js');
+
 
 const Actions = {
     SELECT_MANGA: 'SELECT_MANGA',
@@ -39,36 +43,21 @@ const loadManga = (title) => {
         }
 
         if (mangaId in getState().mangaLibrary) {
-            return dispatch(selectManga(mangaId));
+            dispatch(selectManga(mangaId));
+            return Promise.resolve();
         }
 
         dispatch(selectManga(mangaId));
         dispatch(requestManga(mangaId));
 
-        const Xray = require('x-ray');
-        const x = Xray();
-
-        x(`http://mangafox.me/manga/${mangaId}`, {
-            title: '#title h1',
-            image: '#series_info .cover img@src',
-            chapters: x('ul.chlist li', [{
-                title: '.tips',
-                date: '.date',
-                url: '.tips@href'
-            }])
-        })(function (err, result) {
-            if (err || !('title' in result)) {
-                dispatch(receiveMangaError(mangaId, "Manga not found!"));
-            } else {
-                let id = 0;
-                result.chapters = result.chapters.map(chapter => {
-                    id += 1;
-                    return Object.assign(chapter, {id: `${mangaId}-${id}`, checked: false})
-                });
-
-                dispatch(receiveManga(mangaId, result));
-            }
-        });
+        return scrapeMangaInfo(mangaId)
+            .then(manga => {
+                dispatch(receiveManga(mangaId, manga));
+                return Promise.resolve();
+            })
+            .catch(err => {
+                dispatch(receiveMangaError(mangaId, err.message));
+            });
     }
 };
 
@@ -88,14 +77,11 @@ const downloadChapters = () => {
             return Promise.resolve();
         }
 
-        const {showSaveDirDialog} = require('../service/dialog.js');
-        const {downloadMangaChapters} = require('../service/manga.js');
-
         return showSaveDirDialog()
-            .then((dirPath) => {
+            .then(dirPath => {
                 return downloadMangaChapters(downloadChapters, dirPath);
             })
-            .catch((err) => {
+            .catch(err => {
                 console.log('Download failed:', err);
             });
     }

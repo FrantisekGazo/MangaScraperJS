@@ -12,7 +12,6 @@ const x = Xray({
 
 
 const scrapeChapterPages = (startUrl) => {
-    // Return a new promise.
     return new Promise(function (resolve, reject) {
         x(startUrl, '#image@src')
             .paginate('.next_page@href | MF_pageHref')
@@ -27,6 +26,35 @@ const scrapeChapterPages = (startUrl) => {
     });
 };
 
+const scrapeMangaInfo = (mangaId) => {
+    return new Promise(function (resolve, reject) {
+        x(`http://mangafox.me/manga/${mangaId}`, {
+            title: '#title h1',
+            image: '#series_info .cover img@src',
+            chapters: x('ul.chlist li', [{
+                title: '.tips',
+                date: '.date',
+                url: '.tips@href'
+            }])
+        })(function (err, result) {
+            if (err) {
+                reject(err);
+            } else if (!('title' in result)) {
+                reject(Error("Manga not found!"));
+            } else {
+                let id = 0;
+                result.chapters = result.chapters.map(chapter => {
+                    id += 1;
+                    return Object.assign(chapter, {id: `${mangaId}-${id}`, checked: false})
+                });
+
+                resolve(result);
+            }
+        });
+    });
+};
+
 module.exports = {
-    scrapeChapterPages
+    scrapeChapterPages,
+    scrapeMangaInfo
 };
