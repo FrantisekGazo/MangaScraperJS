@@ -1,3 +1,5 @@
+"use strict";
+
 const { createStore, applyMiddleware, compose } = require('redux');
 const thunkMiddleware = require('redux-thunk').default;
 

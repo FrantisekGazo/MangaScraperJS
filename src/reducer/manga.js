@@ -1,3 +1,5 @@
+"use strict";
+
 const {Actions} = require('../actions/manga');
 
 

@@ -1,7 +1,6 @@
+"use strict";
+
 const {createAction} = require('./index');
-const {scrapeMangaInfo} = require('../service/scraper.js');
-const {showSaveDirDialog} = require('../service/dialog.js');
-const {downloadMangaChapters} = require('../service/manga.js');
 
 
 const Actions = {
@@ -64,6 +63,8 @@ const loadManga = (title) => {
         dispatch(selectManga(mangaId));
         dispatch(requestManga(mangaId));
 
+        const {scrapeMangaInfo} = require('../service/scraper.js');
+
         return scrapeMangaInfo(mangaId)
             .then(manga => {
                 dispatch(receiveManga(mangaId, manga));
@@ -97,6 +98,9 @@ const downloadChapters = () => {
             info = Object.assign(info, {key: chapter.title});
             dispatch(chapterDownloadInfo(mangaId, info));
         };
+
+        const {showSaveDirDialog} = require('../service/dialog.js');
+        const {downloadMangaChapters} = require('../service/manga.js');
 
         return showSaveDirDialog()
             .then(dirPath => {

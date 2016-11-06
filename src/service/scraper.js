@@ -1,3 +1,5 @@
+"use strict";
+
 const Xray = require('x-ray');
 const x = Xray({
     filters: {

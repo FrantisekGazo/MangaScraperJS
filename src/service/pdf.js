@@ -1,3 +1,5 @@
+"use strict";
+
 const fs = require('fs');
 const sizeOf = require('image-size');
 const PDFDocument = require('pdfkit');
@@ -12,12 +14,11 @@ const imgToPdf = (imageFilePaths, filePath) => {
         // add content
         let i;
         for (i = 0; i < imageFilePaths.length; i++) {
+            const image = imageFilePaths[i];
+
             if (i > 0) {
                 doc.addPage();
             }
-
-            const image = imageFilePaths[i];
-            const opts = {fit: [doc.page.width, doc.page.height]};
 
             // get image dimensions fitted to the page
             const fittedSize = fittedSizeOf(image, doc.page);
@@ -26,7 +27,7 @@ const imgToPdf = (imageFilePaths, filePath) => {
             const x = (doc.page.width - fittedSize.width) / 2;
             const y = (doc.page.height - fittedSize.height) / 2;
 
-            doc.image(image, x, y, opts);
+            doc.image(image, x, y, {fit: [doc.page.width, doc.page.height]});
         }
 
         doc.end();
