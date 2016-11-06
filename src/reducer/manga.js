@@ -17,7 +17,8 @@ const mangaInitState = {
     image: '',
     chapters: [],
     isLoading: false,
-    lastUpdated: 0
+    lastUpdated: 0,
+    error: ''
 };
 const manga = (state = mangaInitState, action) => {
     switch (action.type) {
@@ -29,6 +30,11 @@ const manga = (state = mangaInitState, action) => {
             return Object.assign({}, state, action.payload, {
                 isLoading: false,
                 lastUpdated: Date.now()
+            });
+        case Actions.RECEIVE_MANGA_ERROR:
+            return Object.assign({}, state, {
+                isLoading: false,
+                error: action.payload
             });
         case Actions.TOGGLE_CHAPTER:
             let newState = Object.assign({}, state);
@@ -62,6 +68,7 @@ const mangaLibrary = (state = mangaLibaryInitState, action) => {
             }
         case Actions.REQUEST_MANGA:
         case Actions.RECEIVE_MANGA:
+        case Actions.RECEIVE_MANGA_ERROR:
         case Actions.TOGGLE_CHAPTER:
             return Object.assign({}, state, {
                 [action.mangaId]: manga(state[action.mangaId], action)

@@ -57,7 +57,9 @@ const loadManga = (title) => {
                 url: '.tips@href'
             }])
         })(function (err, result) {
-            if (result) {
+            if (err || !('title' in result)) {
+                dispatch(receiveMangaError(mangaId, "Manga not found!"));
+            } else {
                 let id = 0;
                 result.chapters = result.chapters.map(chapter => {
                     id += 1;
@@ -65,8 +67,6 @@ const loadManga = (title) => {
                 });
 
                 dispatch(receiveManga(mangaId, result));
-            } else {
-                dispatch(receiveMangaError(mangaId, "Manga not found!"));
             }
         });
     }

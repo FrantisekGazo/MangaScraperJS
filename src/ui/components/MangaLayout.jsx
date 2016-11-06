@@ -11,6 +11,12 @@ const MangaLayout = ({manga, onChapterClick, onDownloadClick}) => {
         return <Loader />
     }
 
+    if (manga.error) {
+        return <div>
+            {manga.error}
+        </div>
+    }
+
     return <div>
         <br/>
         <button onClick={onDownloadClick}>Download</button>
