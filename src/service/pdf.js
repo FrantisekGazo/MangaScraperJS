@@ -19,14 +19,39 @@ const imgToPdf = (imageFilePaths, filePath) => {
             const image = imageFilePaths[i];
             const opts = {fit: [doc.page.width, doc.page.height]};
 
-            const dimensions = sizeOf(image);
+            // get image dimensions fitted to the page
+            const fittedSize = fittedSizeOf(image, doc.page);
 
-            doc.image(image, 0, 0, opts);
+            // center the image on the page
+            const x = (doc.page.width - fittedSize.width) / 2;
+            const y = (doc.page.height - fittedSize.height) / 2;
+
+            doc.image(image, x, y, opts);
         }
 
         doc.end();
         resolve(filePath);
     });
+};
+
+const fittedSizeOf = (imagePath, pageSize) => {
+    const dimensions = sizeOf(imagePath);
+
+    let out = {width: dimensions.width, height: dimensions.height};
+
+    if (out.width > pageSize.width) {
+        const diff = pageSize.width / out.width;
+        out.width = pageSize.width;
+        out.height = out.height * diff;
+    }
+
+    if (out.height > pageSize.height) {
+        const diff = pageSize.height / out.height;
+        out.height = pageSize.height;
+        out.width = out.width * diff;
+    }
+
+    return out;
 };
 
 module.exports = {
