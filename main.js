@@ -6,7 +6,9 @@ const { app, BrowserWindow } = require('electron');
 let mainWindow;
 
 function createWindow() {
-    mainWindow = new BrowserWindow({width: 800, height: 600});
+    mainWindow = new BrowserWindow({
+        width: 800, height: 600
+    });
 
     if (process.env.NODE_ENV === 'development') {
         mainWindow.loadURL('file://' + __dirname + '/src/index.html');
@@ -26,6 +28,11 @@ function createWindow() {
 
     mainWindow.on('closed', function () {
         mainWindow = null;
+    });
+
+    // prevents the need to put title inside html file
+    mainWindow.on('page-title-updated', function (event) {
+        event.preventDefault();
     });
 }
 

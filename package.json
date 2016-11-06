@@ -1,19 +1,20 @@
 {
-  "name": "Demo",
+  "productName": "Manga Scraper",
+  "description": "Manga Scraper",
   "version": "0.1.0",
-  "description": "Demo app",
+  "name": "MangaScraper",
   "main": "main.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development electron main.js",
     "test": "mocha",
     "clean": "gulp clean",
     "build": "gulp",
-    "pack": "electron-packager . RetroJs --overwrite --platform=darwin --arch=x64 --version=1.4.5 --asar=false --prune --ignore='src' --ignore='release' --ignore='test' --out=release",
+    "pack": "electron-packager . MangaScrapper --overwrite --platform=darwin --arch=x64 --version=1.4.5 --asar=false --prune --ignore='src' --ignore='release' --ignore='test' --out=release",
     "package": "npm-run-all clean build pack"
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/FrantisekGazo/MangaScraperJS"
   },
   "keywords": [
     "Electron",
@@ -23,10 +24,6 @@
   ],
   "author": "GitHub",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/geowarin/electron-hot-boilerplate/issues"
-  },
-  "homepage": "https://geowarin.github.com/electron-hot-boilerplate",
   "devDependencies": {
     "browserify": "^13.0.0",
     "cross-env": "^1.0.7",
