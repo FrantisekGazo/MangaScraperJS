@@ -18,7 +18,9 @@ const mangaInitState = {
     chapters: [],
     isLoading: false,
     lastUpdated: 0,
-    error: ''
+    error: '',
+    isDownloading: false,
+    downloadInfo: null
 };
 const manga = (state = mangaInitState, action) => {
     switch (action.type) {
@@ -50,6 +52,22 @@ const manga = (state = mangaInitState, action) => {
             }
 
             return newState;
+        case Actions.DOWNLOAD_CHAPTERS_START:
+            return Object.assign({}, state, {
+                isDownloading: true,
+                downloadInfo: null
+            });
+        case Actions.DOWNLOAD_INFO:
+            const newInfo = Object.assign({}, state.downloadInfo, {
+                [action.payload.key]: action.payload
+            });
+            return Object.assign({}, state, {
+                downloadInfo: newInfo
+            });
+        case Actions.DOWNLOAD_CHAPTERS_END:
+            return Object.assign({}, state, {
+                isDownloading: false
+            });
         default:
             return state
     }
@@ -70,6 +88,9 @@ const mangaLibrary = (state = mangaLibaryInitState, action) => {
         case Actions.RECEIVE_MANGA:
         case Actions.RECEIVE_MANGA_ERROR:
         case Actions.TOGGLE_CHAPTER:
+        case Actions.DOWNLOAD_CHAPTERS_START:
+        case Actions.DOWNLOAD_INFO:
+        case Actions.DOWNLOAD_CHAPTERS_END:
             return Object.assign({}, state, {
                 [action.mangaId]: manga(state[action.mangaId], action)
             });

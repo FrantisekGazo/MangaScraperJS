@@ -17,11 +17,23 @@ const MangaLayout = ({manga, onChapterClick, onDownloadClick}) => {
         </div>
     }
 
+    let downloadInfo = null;
+    if (manga.downloadInfo) {
+        const infoItems = Object.keys(manga.downloadInfo).map(key => <li key={key}>{key}
+            : {manga.downloadInfo[key].msg}</li>);
+
+        downloadInfo = <ul>
+            {infoItems}
+        </ul>
+    }
+
     return <div>
-        <br/>
-        <button onClick={onDownloadClick}>Download</button>
         <h2>{manga.title}</h2>
         <img src={manga.image}/>
+        <div>
+            <button onClick={onDownloadClick} disabled={manga.isDownloading}>Download</button>
+            {downloadInfo}
+        </div>
         <ChapterList chapters={manga.chapters} onChapterClick={onChapterClick}/>
     </div>
 };

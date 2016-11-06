@@ -10,7 +10,9 @@ const Actions = {
     RECEIVE_MANGA: 'RECEIVE_MANGA',
     RECEIVE_MANGA_ERROR: 'RECEIVE_MANGA_ERROR',
     TOGGLE_CHAPTER: 'TOGGLE_CHAPTER',
-    DOWNLOAD_CHAPTERS: 'DOWNLOAD_CHAPTERS',
+    DOWNLOAD_CHAPTERS_START: 'DOWNLOAD_CHAPTERS_START',
+    DOWNLOAD_CHAPTERS_END: 'DOWNLOAD_CHAPTERS_END',
+    DOWNLOAD_INFO: 'DOWNLOAD_INFO',
 };
 
 const mangaTitleToId = (title) => {
@@ -31,6 +33,18 @@ const receiveManga = (mangaId, manga) => {
 
 const receiveMangaError = (mangaId, error) => {
     return createAction(Actions.RECEIVE_MANGA_ERROR, mangaId, error);
+};
+
+const startChapterDownload = (mangaId) => {
+    return createAction(Actions.DOWNLOAD_CHAPTERS_START, mangaId);
+};
+
+const chapterDownloadInfo = (mangaId, info) => {
+    return createAction(Actions.DOWNLOAD_INFO, mangaId, info);
+};
+
+const endChapterDownload = (mangaId) => {
+    return createAction(Actions.DOWNLOAD_CHAPTERS_END, mangaId);
 };
 
 const loadManga = (title) => {
@@ -77,11 +91,23 @@ const downloadChapters = () => {
             return Promise.resolve();
         }
 
+        dispatch(startChapterDownload(mangaId));
+
+        const downloadChaptersProgress = (chapter, info) => {
+            info = Object.assign(info, {key: chapter.title});
+            dispatch(chapterDownloadInfo(mangaId, info));
+        };
+
         return showSaveDirDialog()
             .then(dirPath => {
-                return downloadMangaChapters(downloadChapters, dirPath);
+                return downloadMangaChapters(downloadChapters, dirPath, downloadChaptersProgress);
+            })
+            .then(() => {
+                dispatch(endChapterDownload(mangaId));
+                return Promise.resolve();
             })
             .catch(err => {
+                dispatch(endChapterDownload(mangaId));
                 console.log('Download failed:', err);
             });
     }
