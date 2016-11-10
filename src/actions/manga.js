@@ -1,6 +1,8 @@
 "use strict";
 
 const {createAction} = require('./index');
+const {showSaveDirDialog} = require('../service/dialog');
+const {downloadMangaChapters} = require('../service/manga');
 
 
 const Actions = {
@@ -99,18 +101,17 @@ const downloadChapters = () => {
             dispatch(chapterDownloadInfo(mangaId, info));
         };
 
-        const {showSaveDirDialog} = require('../service/dialog.js');
-        const {downloadMangaChapters} = require('../service/manga.js');
+        console.log('imported');
 
         return showSaveDirDialog()
-            .then(dirPath => {
+            .then((dirPath) => {
                 return downloadMangaChapters(downloadChapters, dirPath, downloadChaptersProgress);
             })
             .then(() => {
                 dispatch(endChapterDownload(mangaId));
                 return Promise.resolve();
             })
-            .catch(err => {
+            .catch((err) => {
                 dispatch(endChapterDownload(mangaId));
                 console.log('Download failed:', err);
             });

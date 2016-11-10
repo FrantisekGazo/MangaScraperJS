@@ -3,9 +3,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const {scrapeChapterPages} = require('./scraper.js');
-const {downloadImages} = require('./image.js');
-const {imgToPdf} = require('./pdf.js');
+const {scrapeChapterPages} = require('./scraper');
+const {downloadImages} = require('./image');
+const {imgToPdf} = require('./pdf');
 
 
 const deleteFolderRecursive = (dirPath) => {
