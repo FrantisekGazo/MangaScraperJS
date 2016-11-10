@@ -6,14 +6,14 @@ Simple desktop app created using these technologies:
 <a href="https://facebook.github.io/react/"><img src="./readme-res/logo-react.png" alt="React" title="React" width="80"></a>
 <a href="http://redux.js.org/"><img src="./readme-res/logo-redux.png" alt="Redux" title="Redux" width="80"></a>
 
-Project contains:
+##Project contains:
 
 - Redux devtools 
 - hot reloading for React components without babel nor webpack
 - working test example
 
 
-Dependencies:
+##Dependencies:
 
 - [image-downloader](https://www.npmjs.com/package/image-downloader): downloads images
 - [image-size](https://www.npmjs.com/package/image-size): measures image size
@@ -22,7 +22,7 @@ Dependencies:
 - [redux-promise-middleware](https://www.npmjs.com/package/redux-promise-middleware), [redux-thunk](https://www.npmjs.com/package/redux-thunk): enables usage of async Redux actions
 - [x-ray](https://www.npmjs.com/package/x-ray): scrapes data from web pages 
 
-Dev Dependencies:
+##Dev Dependencies:
 
 - [electron](https://www.npmjs.com/package/electron): Electron :)
 - [electron-packager](https://www.npmjs.com/package/electron-packager): Electron packager
