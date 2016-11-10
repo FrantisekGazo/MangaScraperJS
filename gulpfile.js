@@ -80,6 +80,7 @@ function defaultPackOptions() {
             '^/test',
             '^/.gitignore',
             '^/gulpfile.js',
+            '^/readme-res',
             '^/README.md'
         ]
     };
