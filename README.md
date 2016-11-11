@@ -19,6 +19,7 @@ Simple desktop app created using these technologies:
 - [image-size](https://www.npmjs.com/package/image-size): measures image size
 - [pdfkit](https://www.npmjs.com/package/pdfkit): craetes pdf file
 - [react](https://www.npmjs.com/package/react), [react-dom](https://www.npmjs.com/package/react-dom), [react-redux](https://www.npmjs.com/package/react-redux), [redux](https://www.npmjs.com/package/redux): basic React+Redux setup
+- [react-addons-css-transition-group](https://facebook.github.io/react/docs/animation.html#getting-started): add-on component for easily implementing basic CSS animations and transitions  
 - [redux-promise-middleware](https://www.npmjs.com/package/redux-promise-middleware), [redux-thunk](https://www.npmjs.com/package/redux-thunk): enables usage of async Redux actions
 - [x-ray](https://www.npmjs.com/package/x-ray): scrapes data from web pages 
 
