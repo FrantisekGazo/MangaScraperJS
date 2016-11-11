@@ -1,5 +1,7 @@
 "use strict";
 
+const update = require('immutability-helper');
+
 const {Actions} = require('../actions/manga');
 
 
@@ -27,48 +29,79 @@ const mangaInitState = {
 const manga = (state = mangaInitState, action) => {
     switch (action.type) {
         case Actions.REQUEST_MANGA:
-            return Object.assign({}, state, {
-                isLoading: true
+            return update(state, {
+                isLoading: {$set: true}
             });
         case Actions.RECEIVE_MANGA:
-            return Object.assign({}, state, action.payload, {
-                isLoading: false,
-                lastUpdated: Date.now()
+            return update(state, {
+                $merge: {
+                    title: action.payload.title,
+                    image: action.payload.image,
+                    chapters: action.payload.chapters,
+                    isLoading: false,
+                    lastUpdated: Date.now()
+                }
             });
         case Actions.RECEIVE_MANGA_ERROR:
-            return Object.assign({}, state, {
-                isLoading: false,
-                error: action.payload
+            return update(state, {
+                $merge: {
+                    isLoading: false,
+                    error: action.payload
+                }
             });
         case Actions.TOGGLE_CHAPTER:
-            let newState = Object.assign({}, state);
-            newState.chapters = state.chapters.slice();
-
-            var i = 0;
-            for (i = 0; i < newState.chapters.length; i++) {
-                const chapter = newState.chapters[i];
+            let i = 0;
+            let found = false;
+            for (i = 0; i < state.chapters.length; i++) {
+                const chapter = state.chapters[i];
                 if (chapter.id == action.payload) {
-                    newState.chapters[i] = Object.assign({}, chapter, {checked: !chapter.checked});
+                    found = true;
                     break;
                 }
             }
 
-            return newState;
+            if (found) {
+                return update(state, {
+                    chapters: {
+                        [i]: {
+                            checked: {
+                                $apply: function (checked) {
+                                    return !checked;
+                                }
+                            }
+                        }
+
+                    }
+                });
+            } else {
+                return newState;
+            }
         case Actions.DOWNLOAD_CHAPTERS_START:
-            return Object.assign({}, state, {
-                isDownloading: true,
-                downloadInfo: null
+            return update(state, {
+                $merge: {
+                    isDownloading: true,
+                    downloadInfo: null
+                }
             });
         case Actions.DOWNLOAD_INFO:
-            const newInfo = Object.assign({}, state.downloadInfo, {
-                [action.payload.key]: action.payload
-            });
-            return Object.assign({}, state, {
-                downloadInfo: newInfo
-            });
+            if (state.downloadInfo) {
+                return update(state, {
+                    downloadInfo: {
+                        [action.payload.key]: {$set: action.payload}
+                    }
+                });
+            } else {
+                return update(state, {
+                    downloadInfo: {
+                        $set: {
+                            [action.payload.key]: action.payload
+                        }
+                    }
+                });
+            }
         case Actions.DOWNLOAD_CHAPTERS_END:
-            return Object.assign({}, state, {
-                isDownloading: false
+            return update(state, {
+                isDownloading: {$set: false}
             });
         default:
             return state
@@ -82,8 +115,8 @@ const mangaLibrary = (state = mangaLibaryInitState, action) => {
             if (action.mangaId in state) {
                 return state
             } else {
-                return Object.assign({}, state, {
-                    [action.mangaId]: manga(state[action.mangaId], action)
+                return update(state, {
+                    [action.mangaId]: {$set: manga(state[action.mangaId], action)}
                 });
             }
         case Actions.REQUEST_MANGA:
@@ -93,8 +126,8 @@ const mangaLibrary = (state = mangaLibaryInitState, action) => {
         case Actions.DOWNLOAD_CHAPTERS_START:
         case Actions.DOWNLOAD_INFO:
         case Actions.DOWNLOAD_CHAPTERS_END:
-            return Object.assign({}, state, {
-                [action.mangaId]: manga(state[action.mangaId], action)
+            return update(state, {
+                [action.mangaId]: {$set: manga(state[action.mangaId], action)}
             });
         default:
             return state
