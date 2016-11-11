@@ -1,40 +1,47 @@
 "use strict";
 
 const React = require('react');
+const ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 const ChapterList = require('./ChapterList.jsx');
 const Loader = require('./Loader.jsx');
 
-
 const MangaLayout = ({manga, onChapterClick, onDownloadClick}) => {
-    if (manga.isLoading) {
-        return <Loader />
-    }
+    let content = null;
 
-    if (manga.error) {
-        return <div>
+    if (manga.isLoading) {
+        content = <div key="load">
+            <Loader/>
+        </div>
+    } else if (manga.error) {
+        return <div key="error">
             {manga.error}
         </div>
+    } else {
+        let infoItems = null;
+        if (manga.downloadInfo) {
+            infoItems = Object.keys(manga.downloadInfo)
+                .map(key => <li key={key}>{key} : {manga.downloadInfo[key].msg}</li>);
+        }
+
+        content = <div key={`manga-${manga.title}`}>
+            <h2>{manga.title}</h2>
+            <img src={manga.image}/>
+            <div>
+                <button onClick={onDownloadClick} disabled={manga.isDownloading}>Download</button>
+                <ul>
+                    {infoItems}
+                </ul>
+            </div>
+            <ChapterList chapters={manga.chapters} onChapterClick={onChapterClick}/>
+        </div>
     }
 
-    let downloadInfo = null;
-    if (manga.downloadInfo) {
-        const infoItems = Object.keys(manga.downloadInfo).map(key => <li key={key}>{key}
-            : {manga.downloadInfo[key].msg}</li>);
-
-        downloadInfo = <ul>
-            {infoItems}
-        </ul>
-    }
 
     return <div>
-        <h2>{manga.title}</h2>
-        <img src={manga.image}/>
-        <div>
-            <button onClick={onDownloadClick} disabled={manga.isDownloading}>Download</button>
-            {downloadInfo}
-        </div>
-        <ChapterList chapters={manga.chapters} onChapterClick={onChapterClick}/>
+        <ReactCSSTransitionGroup transitionName="example" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+            {content}
+        </ReactCSSTransitionGroup>
     </div>
 };
 
