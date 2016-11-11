@@ -3,6 +3,7 @@
 const {createAction} = require('./index');
 const {showSaveDirDialog} = require('../service/dialog');
 const {downloadMangaChapters} = require('../service/manga');
+const {scrapeMangaInfo} = require('../service/scraper');
 
 
 const Actions = {
@@ -52,7 +53,7 @@ const loadManga = (title) => {
     return (dispatch, getState) => {
         const mangaId = mangaTitleToId(title);
 
-        if (mangaId == getState().selected.mangaId) {
+        if (mangaId === getState().selected) {
             // Let the calling code know there's nothing to wait for.
             return Promise.resolve();
         }
@@ -64,8 +65,6 @@ const loadManga = (title) => {
 
         dispatch(selectManga(mangaId));
         dispatch(requestManga(mangaId));
-
-        const {scrapeMangaInfo} = require('../service/scraper.js');
 
         return scrapeMangaInfo(mangaId)
             .then(manga => {
@@ -125,26 +124,3 @@ module.exports = {
     toggleChapter,
     downloadChapters
 };
-
-/*
- const Xray = require('x-ray');
- const x = Xray({
- filters: {
- MF_pageHref: function (value) {
- return `http://mangafox.me/directory/${value}`;
- }
- }
- });
-
- x('http://mangafox.me/directory/?az', 'li', [{
- title: '.manga_text .title',
- img: '.manga_img@href',
- }])
- .paginate('.next:parent@href | MF_pageHref')
- .write('results.json')
- /*
- ((err, result) => {
- console.log('ERROR:', err);
- console.log('RESULT:', result);
- });
- */
