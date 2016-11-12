@@ -41,7 +41,7 @@ gulp.task('bundle', function () {
     return b.bundle()
         .pipe(source('index.js'))
         .pipe(buffer())
-        .pipe(minifier(options, uglifyJS))
+        // FIXME turn off .pipe(minifier(options, uglifyJS))
         .pipe(gulp.dest('./dist/'));
 });
 
