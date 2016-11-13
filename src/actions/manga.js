@@ -22,31 +22,31 @@ const mangaTitleToId = (title) => {
 };
 
 const selectManga = (mangaId) => {
-    return createAction(Actions.SELECT_MANGA, mangaId);
+    return createAction(Actions.SELECT_MANGA, {mangaId});
 };
 
 const requestManga = (mangaId) => {
-    return createAction(Actions.REQUEST_MANGA, mangaId);
+    return createAction(Actions.REQUEST_MANGA, {mangaId});
 };
 
-const receiveManga = (mangaId, manga) => {
-    return createAction(Actions.RECEIVE_MANGA, mangaId, manga);
+const receiveManga = (manga) => {
+    return createAction(Actions.RECEIVE_MANGA, manga);
 };
 
 const receiveMangaError = (mangaId, error) => {
-    return createAction(Actions.RECEIVE_MANGA_ERROR, mangaId, error);
+    return createAction(Actions.RECEIVE_MANGA_ERROR, {mangaId, error});
 };
 
 const startChapterDownload = (mangaId) => {
-    return createAction(Actions.DOWNLOAD_CHAPTERS_START, mangaId);
+    return createAction(Actions.DOWNLOAD_CHAPTERS_START, {mangaId});
 };
 
 const chapterDownloadInfo = (mangaId, info) => {
-    return createAction(Actions.DOWNLOAD_INFO, mangaId, info);
+    return createAction(Actions.DOWNLOAD_INFO, {mangaId, info});
 };
 
 const endChapterDownload = (mangaId) => {
-    return createAction(Actions.DOWNLOAD_CHAPTERS_END, mangaId);
+    return createAction(Actions.DOWNLOAD_CHAPTERS_END, {mangaId});
 };
 
 const loadManga = (title) => {
@@ -68,7 +68,7 @@ const loadManga = (title) => {
 
         return scrapeMangaInfo(mangaId)
             .then(manga => {
-                dispatch(receiveManga(mangaId, manga));
+                dispatch(receiveManga(manga));
                 return Promise.resolve();
             })
             .catch(err => {
@@ -99,8 +99,6 @@ const downloadChapters = () => {
             info = Object.assign(info, {key: chapter.title});
             dispatch(chapterDownloadInfo(mangaId, info));
         };
-
-        console.log('imported');
 
         return showSaveDirDialog()
             .then((dirPath) => {

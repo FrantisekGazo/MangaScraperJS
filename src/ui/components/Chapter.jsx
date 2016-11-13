@@ -2,12 +2,28 @@
 
 const React = require('react');
 
+class Chapter extends React.Component {
 
-const Chapter = ({chapter, onClick}) => {
-    return <li onClick={onClick}>
-        <input type="checkbox" checked={chapter.checked} /> {chapter.title} ({chapter.date})
-    </li>
-};
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return this.inRender(this.props.chapter, this.props.onClick)
+    }
+
+    inRender(chapter, onClick) {
+        return <li onClick={onClick}>
+            <input type="checkbox" checked={chapter.checked}/> {chapter.title} ({chapter.date})
+        </li>
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        const chapter = this.props.chapter;
+        const nextChapter = nextProps.chapter;
+        return chapter.id !== nextChapter.id || chapter.checked !== nextChapter.checked;
+    }
+}
 
 Chapter.propTypes = {
     chapter: React.PropTypes.shape({

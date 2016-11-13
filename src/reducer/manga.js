@@ -9,7 +9,7 @@ const selectedInitState = '';
 const selected = (state = selectedInitState, action) => {
     switch (action.type) {
         case Actions.SELECT_MANGA:
-            return action.mangaId;
+            return action.payload.mangaId;
         default:
             return state;
     }
@@ -46,7 +46,7 @@ const manga = (state = mangaInitState, action) => {
             return update(state, {
                 $merge: {
                     isLoading: false,
-                    error: action.payload
+                    error: action.payload.error
                 }
             });
         case Actions.TOGGLE_CHAPTER:
@@ -54,7 +54,7 @@ const manga = (state = mangaInitState, action) => {
             let found = false;
             for (i = 0; i < state.chapters.length; i++) {
                 const chapter = state.chapters[i];
-                if (chapter.id == action.payload) {
+                if (chapter.id == action.payload.chapterId) {
                     found = true;
                     break;
                 }
@@ -87,14 +87,14 @@ const manga = (state = mangaInitState, action) => {
             if (state.downloadInfo) {
                 return update(state, {
                     downloadInfo: {
-                        [action.payload.key]: {$set: action.payload}
+                        [action.payload.key]: {$set: action.payload.info}
                     }
                 });
             } else {
                 return update(state, {
                     downloadInfo: {
                         $set: {
-                            [action.payload.key]: action.payload
+                            [action.payload.key]: action.payload.info
                         }
                     }
                 });
@@ -112,11 +112,11 @@ const mangaLibaryInitState = {};
 const mangaLibrary = (state = mangaLibaryInitState, action) => {
     switch (action.type) {
         case Actions.SELECT_MANGA:
-            if (action.mangaId in state) {
+            if (action.payload.mangaId in state) {
                 return state
             } else {
                 return update(state, {
-                    [action.mangaId]: {$set: manga(state[action.mangaId], action)}
+                    [action.payload.mangaId]: {$set: manga(state[action.payload.mangaId], action)}
                 });
             }
         case Actions.REQUEST_MANGA:
@@ -127,7 +127,7 @@ const mangaLibrary = (state = mangaLibaryInitState, action) => {
         case Actions.DOWNLOAD_INFO:
         case Actions.DOWNLOAD_CHAPTERS_END:
             return update(state, {
-                [action.mangaId]: {$set: manga(state[action.mangaId], action)}
+                [action.payload.mangaId]: {$set: manga(state[action.payload.mangaId], action)}
             });
         default:
             return state

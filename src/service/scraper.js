@@ -13,7 +13,7 @@ const x = Xray({
 });
 
 
-const scrapeChapterPages = (startUrl) => {
+function scrapeChapterPages(startUrl) {
     return new Promise(function (resolve, reject) {
         x(startUrl, '#image@src')
             .paginate('.next_page@href | MF_pageHref')
@@ -26,9 +26,9 @@ const scrapeChapterPages = (startUrl) => {
                 }
             });
     });
-};
+}
 
-const scrapeMangaInfo = (mangaId) => {
+function scrapeMangaInfo(mangaId) {
     return new Promise(function (resolve, reject) {
         x(`http://mangafox.me/manga/${mangaId}`, {
             title: '#title h1',
@@ -49,12 +49,34 @@ const scrapeMangaInfo = (mangaId) => {
                     id += 1;
                     return Object.assign(chapter, {id: `${mangaId}-${id}`, checked: false})
                 });
-
+                let title = result.title;
+                if (title.endsWith(" Manga")) {
+                    result.title = title.substr(0, title.length - " Manga".length)
+                }
+                result['mangaId'] = mangaId;
                 resolve(result);
             }
         });
     });
-};
+}
+
+function mockScrapeMangaInfo(mangaId) {
+    return new Promise(function (resolve, reject) {
+        setTimeout(() => {
+            let chapters = [];
+            let i;
+            for (i = 0; i < 100; i++) {
+                chapters.push({id: `${mangaId}-${i}`, title: `Chapter n.${i}`, url: 'no-url', date: `1.1.1111`, checked: false});
+            }
+
+            resolve({
+                title: `MOCK ${mangaId}`,
+                image: 'no-image',
+                chapters: chapters
+            });
+        }, 2000);
+    });
+}
 
 module.exports = {
     scrapeChapterPages,

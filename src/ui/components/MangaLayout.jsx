@@ -6,15 +6,21 @@ const ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 const ChapterList = require('./ChapterList.jsx');
 const Loader = require('./Loader.jsx');
 
+
+function FirstChild(props) {
+    const childrenArray = React.Children.toArray(props.children);
+    return childrenArray[0] || null;
+}
+
 const MangaLayout = ({manga, onChapterClick, onDownloadClick}) => {
+    let loader = null;
+    let error = null;
     let content = null;
 
     if (manga.isLoading) {
-        content = <div key="load">
-            <Loader/>
-        </div>
+        loader = <Loader/>
     } else if (manga.error) {
-        return <div key="error">
+        error = <div key="error">
             {manga.error}
         </div>
     } else {
@@ -39,6 +45,14 @@ const MangaLayout = ({manga, onChapterClick, onDownloadClick}) => {
 
 
     return <div>
+        <ReactCSSTransitionGroup component={FirstChild}
+                                 transitionName="example" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+            {loader}
+        </ReactCSSTransitionGroup>
+        <ReactCSSTransitionGroup component={FirstChild}
+                                 transitionName="example" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+            {error}
+        </ReactCSSTransitionGroup>
         <ReactCSSTransitionGroup transitionName="example" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
             {content}
         </ReactCSSTransitionGroup>
