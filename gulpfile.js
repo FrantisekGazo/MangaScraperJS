@@ -46,7 +46,7 @@ gulp.task('bundle', function () {
 });
 
 gulp.task('html', function () {
-    return gulp.src('./src/index.html')
+    return gulp.src(['./src/index.html', './src/splash.html'])
         .pipe(gulp.dest('dist'));
 });
 
