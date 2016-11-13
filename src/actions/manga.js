@@ -3,7 +3,7 @@
 const {createAction} = require('./index');
 const {showSaveDirDialog} = require('../service/dialog');
 const {downloadMangaChapters} = require('../service/manga');
-const {scrapeMangaInfo} = require('../service/scraper');
+const {WorkerTasks, execByWorker} = require('../service/worker');
 
 
 const Actions = {
@@ -66,14 +66,9 @@ const loadManga = (title) => {
         dispatch(selectManga(mangaId));
         dispatch(requestManga(mangaId));
 
-        return scrapeMangaInfo(mangaId)
-            .then(manga => {
-                dispatch(receiveManga(manga));
-                return Promise.resolve();
-            })
-            .catch(err => {
-                dispatch(receiveMangaError(mangaId, err.message));
-            });
+        return execByWorker(WorkerTasks.LOAD_MANGA, mangaId)
+            .then((manga) => dispatch(receiveManga(manga)))
+            .catch((err) => dispatch(receiveMangaError(mangaId, err.message)));
     }
 };
 

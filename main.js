@@ -3,24 +3,47 @@
 const {app, BrowserWindow} = require('electron');
 
 
+//console.log(app.getPath('userData')); // TODO : use for PDF storage
+//console.log(app.getPath('temp')); // TODO : use for image download
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
-let loadingScreen;
+let workerWindow;
+let splashWindow;
 let windowParams = {
     width: 800,
     height: 500,
     show: false
 };
 
+function getHtmlPath(htmlName) {
+    if (process.env.NODE_ENV === 'development') {
+        return `file://${__dirname}/src/${htmlName}.html`;
+    } else {
+        return `file://${__dirname}/dist/${htmlName}.html`;
+    }
+}
+
+function createSplashWindow() {
+    splashWindow = new BrowserWindow(Object.assign(windowParams, {parent: mainWindow}));
+    splashWindow.loadURL(getHtmlPath('splash'));
+
+    splashWindow.on('closed', function () {
+        splashWindow = null;
+    });
+    splashWindow.webContents.on('did-finish-load', function () {
+        splashWindow.show();
+    });
+}
+
 function createMainWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow(windowParams);
+    mainWindow.loadURL(getHtmlPath('index'));
 
     // and load the index.html of the app.
     if (process.env.NODE_ENV === 'development') {
-        mainWindow.loadURL(`file://${__dirname}/src/index.html`);
-
         // installREDUX debug tools
         const tools = require('electron-devtools-installer');
         const installExtension = tools.default;
@@ -32,7 +55,7 @@ function createMainWindow() {
 
         mainWindow.webContents.openDevTools();
     } else {
-        mainWindow.loadURL(`file://${__dirname}/dist/index.html`);
+        //mainWindow.webContents.openDevTools();
     }
 
     // Emitted when the window is closed.
@@ -49,34 +72,32 @@ function createMainWindow() {
     });
 
 
-    mainWindow.webContents.on('did-finish-load', () => {
+    mainWindow.webContents.on('did-finish-load', function () {
         mainWindow.show();
 
-        if (loadingScreen) {
-            let loadingScreenBounds = loadingScreen.getBounds();
-            mainWindow.setBounds(loadingScreenBounds);
-            loadingScreen.close();
+        if (splashWindow) {
+            let splashBounds = splashWindow.getBounds();
+            mainWindow.setBounds(splashBounds);
+            splashWindow.close();
+            splashWindow = null;
         }
     });
 }
 
-function createSplashScreen() {
-    loadingScreen = new BrowserWindow(Object.assign(windowParams, {parent: mainWindow}));
-    if (process.env.NODE_ENV === 'development') {
-        loadingScreen.loadURL(`file://${__dirname}/src/splash.html`);
-    } else {
-        loadingScreen.loadURL(`file://${__dirname}/dist/splash.html`);
-    }
+function createWorkerWindow() {
+    workerWindow = new BrowserWindow({width: 200, height: 200, show: false, parent: mainWindow});
+    workerWindow.loadURL(getHtmlPath('worker'));
 
-    loadingScreen.on('closed', () => loadingScreen = null);
-    loadingScreen.webContents.on('did-finish-load', () => {
-        loadingScreen.show();
+    workerWindow.webContents.on('did-finish-load', function () {
     });
 }
 
 function createWindow() {
-    createSplashScreen();
     createMainWindow();
+    createSplashWindow();
+    if (!workerWindow) {
+        createWorkerWindow();
+    }
 }
 
 // This method will be called when Electron has finished

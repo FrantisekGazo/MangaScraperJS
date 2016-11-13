@@ -20,7 +20,7 @@ gulp.task('clean', function (cb) {
     del(['dist', 'release'], cb);
 });
 
-gulp.task('bundle', function () {
+gulp.task('bundle-index', function () {
     const b = browserify({
         entries: './src/index.js',
         debug: false,
@@ -45,8 +45,25 @@ gulp.task('bundle', function () {
         .pipe(gulp.dest('./dist/'));
 });
 
+gulp.task('bundle-worker', function () {
+    const b = browserify({
+        entries: './src/worker.js',
+        debug: false,
+        node: true,
+        bundleExternal: false,
+        transform: [reactify, envify({
+            NODE_ENV: 'production'
+        })]
+    });
+
+    return b.bundle()
+        .pipe(source('worker.js'))
+        .pipe(buffer())
+        .pipe(gulp.dest('./dist/'));
+});
+
 gulp.task('html', function () {
-    return gulp.src(['./src/index.html', './src/splash.html'])
+    return gulp.src(['./src/index.html', './src/splash.html', './src/worker.html'])
         .pipe(gulp.dest('dist'));
 });
 
@@ -55,11 +72,8 @@ gulp.task('assets', function () {
         .pipe(gulp.dest('dist'));
 });
 
-gulp.task('default', ['html', 'assets', 'bundle']);
+gulp.task('default', ['html', 'assets', 'bundle-index', 'bundle-worker']);
 
-gulp.task('hello', function () {
-    console.log(path.dirname(__dirname + '/src'));
-});
 
 // PACKAGING
 
