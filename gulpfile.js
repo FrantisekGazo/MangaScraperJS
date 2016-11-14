@@ -77,8 +77,8 @@ gulp.task('default', ['html', 'assets', 'bundle-index', 'bundle-worker']);
 
 // PACKAGING
 
-function defaultPackOptions() {
-    return {
+function getPackOptions(opts) {
+    return Object.assign({
         dir: '.',
         asar: false,
         version: '1.4.5',
@@ -97,12 +97,42 @@ function defaultPackOptions() {
             '^/readme-res',
             '^/README.md'
         ]
-    };
+    }, opts);
 }
 
 gulp.task('pack-mac', function () {
-    const options = Object.assign(defaultPackOptions(), {
+    const options = getPackOptions({
         platform: 'darwin',
+        arch: 'x64',
+    });
+
+    return packager(options, (err, appPaths) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log('Done', appPaths);
+        }
+    });
+});
+
+gulp.task('pack-win', function () {
+    const options = getPackOptions({
+        platform: 'win32',
+        arch: 'x64',
+    });
+
+    return packager(options, (err, appPaths) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log('Done', appPaths);
+        }
+    });
+});
+
+gulp.task('pack-lin', function () {
+    const options = getPackOptions({
+        platform: 'linux',
         arch: 'x64',
     });
 
