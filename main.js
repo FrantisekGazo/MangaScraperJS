@@ -85,7 +85,12 @@ function createMainWindow() {
 }
 
 function createWorkerWindow() {
-    workerWindow = new BrowserWindow({width: 200, height: 200, show: false, parent: mainWindow});
+    if (process.env.NODE_ENV === 'development') {
+        workerWindow = new BrowserWindow({width: 500, height: 300, show: true, parent: mainWindow});
+        workerWindow.webContents.openDevTools();
+    } else {
+        workerWindow = new BrowserWindow({width: 10, height: 10, show: false, parent: mainWindow});
+    }
     workerWindow.loadURL(getHtmlPath('worker'));
 
     workerWindow.webContents.on('did-finish-load', function () {

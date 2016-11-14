@@ -74,7 +74,7 @@ const manga = (state = mangaInitState, action) => {
                     }
                 });
             } else {
-                return newState;
+                return state;
             }
         case Actions.DOWNLOAD_CHAPTERS_START:
             return update(state, {
@@ -87,14 +87,14 @@ const manga = (state = mangaInitState, action) => {
             if (state.downloadInfo) {
                 return update(state, {
                     downloadInfo: {
-                        [action.payload.key]: {$set: action.payload.info}
+                        [action.payload.info.key]: {$set: action.payload.info}
                     }
                 });
             } else {
                 return update(state, {
                     downloadInfo: {
                         $set: {
-                            [action.payload.key]: action.payload.info
+                            [action.payload.info.key]: action.payload.info
                         }
                     }
                 });

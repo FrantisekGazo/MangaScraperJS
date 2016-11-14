@@ -2,7 +2,6 @@
 
 const {createAction} = require('./index');
 const {showSaveDirDialog} = require('../service/dialog');
-const {downloadMangaChapters} = require('../service/manga');
 const {WorkerTasks, execByWorker} = require('../service/worker');
 
 
@@ -74,10 +73,10 @@ const loadManga = (title) => {
 
 const toggleChapter = (chapterId) => {
     const ids = chapterId.split('-');
-    return createAction(Actions.TOGGLE_CHAPTER, ids[0], chapterId);
+    return createAction(Actions.TOGGLE_CHAPTER, {mangaId: ids[0], chapterId});
 };
 
-const downloadChapters = () => {
+function downloadChapters() {
     return (dispatch, getState) => {
         const mangaId = getState().selected;
         const manga = getState().mangaLibrary[mangaId];
@@ -90,15 +89,20 @@ const downloadChapters = () => {
 
         dispatch(startChapterDownload(mangaId));
 
-        const downloadChaptersProgress = (chapter, info) => {
-            info = Object.assign(info, {key: chapter.title});
+        function downloadChaptersProgress(info) {
             dispatch(chapterDownloadInfo(mangaId, info));
-        };
+        }
 
         return showSaveDirDialog()
             .then((dirPath) => {
-                return downloadMangaChapters(downloadChapters, dirPath, downloadChaptersProgress);
-            })
+                    return execByWorker(
+                        WorkerTasks.DOWNLOAD_MANGA_CHAPTERS, {
+                            mangaId: mangaId,
+                            chapters: downloadChapters,
+                            dirPath: dirPath
+                        }, downloadChaptersProgress);
+                }
+            )
             .then(() => {
                 dispatch(endChapterDownload(mangaId));
                 return Promise.resolve();
@@ -108,7 +112,7 @@ const downloadChapters = () => {
                 console.log('Download failed:', err);
             });
     }
-};
+}
 
 
 module.exports = {
