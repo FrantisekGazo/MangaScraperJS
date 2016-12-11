@@ -21,7 +21,8 @@ function scrapeChapterPages(startUrl) {
                 if (err) {
                     reject(err);
                 } else {
-                    const images = result.filter(url => url && url.endsWith('.jpg'));
+                    // they changed url and now it ends with '.jpg?token=...'
+                    const images = result.filter(url => url !== undefined && url !== null);
                     resolve(images);
                 }
             });
