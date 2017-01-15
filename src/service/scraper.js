@@ -13,20 +13,75 @@ const x = Xray({
 });
 
 
-function scrapeChapterPages(startUrl) {
+function scrapeChapterPageNumbers(startUrl) {
     return new Promise(function (resolve, reject) {
-        x(startUrl, '#image@src')
-            .paginate('.next_page@href | MF_pageHref')
+        x(startUrl, {
+            items: x('#top_center_bar .l option', [{
+                title: '@html'
+            }])
+        })(function (err, result) {
+            if (err) {
+                reject(err);
+            } else {
+                // console.log('RES', result);
+                const pageNumbers = result.items.map(item => parseInt(item.title)).filter(num => !isNaN(num));
+                resolve(pageNumbers);
+            }
+        });
+    });
+}
+
+function scrapeChapterPageUrls(startUrl) {
+    const lastSlash = startUrl.lastIndexOf('/');
+    const baseUrl = startUrl.substr(0, lastSlash + 1);
+
+    return scrapeChapterPageNumbers(startUrl)
+        .then((pageNumbers) => {
+            const pageUrls = pageNumbers.map(num => `${baseUrl}${num}.html`);
+            // console.log('PAGES:', pageUrls);
+            return pageUrls;
+        });
+}
+
+function scrapeChapterPageImageUrl(pageUrl, delay, retryMax = 3) {
+    return new Promise(function (resolve, reject) {
+        setTimeout(() => {
+            x(pageUrl, '#image@src')
             ((err, result) => {
                 if (err) {
+                    // console.log('reject:', pageUrl, err);
                     reject(err);
+                } else if (result === undefined) { // retry if image url was not found
+                    if (retryMax <= 0) {
+                        // console.log('MAX', pageUrl, retryMax);
+                        reject(Error('Image not found!'));
+                    } else {
+                        // console.log('RETRY', pageUrl, retryMax);
+                        scrapeChapterPageImageUrl(pageUrl, delay, retryMax - 1)
+                            .then((result) => {
+                                resolve(result);
+                            })
+                            .catch((err) => {
+                                reject(err);
+                            });
+                    }
                 } else {
-                    // they changed url and now it ends with '.jpg?token=...'
-                    const images = result.filter(url => url !== undefined && url !== null);
-                    resolve(images);
+                    // console.log('resolve:', pageUrl, result);
+                    resolve(result);
                 }
             });
+        }, delay)
     });
+}
+
+function scrapeChapterPages(startUrl) {
+    return scrapeChapterPageUrls(startUrl)
+        .then(pageUrls => {
+            let i = 1; // exec scraps 300ms apart (because web web made a countermeasure against many subsequent requests)
+            return Promise.all(
+                pageUrls.map(pageUrl => scrapeChapterPageImageUrl(pageUrl, (++i) * 300))
+            );
+        });
 }
 
 function scrapeMangaInfo(mangaId) {
