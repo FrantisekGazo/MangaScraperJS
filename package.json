@@ -14,7 +14,7 @@
     "pack-mac": "gulp pack-mac",
     "pack-win": "gulp pack-win",
     "pack-lin": "gulp pack-lin",
-    "pack-all": "npm-run-all build-mac build-win build-lin",
+    "pack-all": "npm-run-all pack-mac pack-win pack-lin",
     "clean-build-mac": "npm-run-all clean build pack-mac",
     "clean-build-all": "npm-run-all clean build pack-all"
   },
