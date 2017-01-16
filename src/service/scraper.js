@@ -15,19 +15,21 @@ const x = Xray({
 
 function scrapeChapterPageNumbers(startUrl) {
     return new Promise(function (resolve, reject) {
-        x(startUrl, {
-            items: x('#top_center_bar .l option', [{
-                title: '@html'
-            }])
-        })(function (err, result) {
-            if (err) {
-                reject(err);
-            } else {
-                // console.log('RES', result);
-                const pageNumbers = result.items.map(item => parseInt(item.title)).filter(num => !isNaN(num));
-                resolve(pageNumbers);
-            }
-        });
+        setInterval(() => {
+            x(startUrl, {
+                items: x('#top_center_bar .l option', [{
+                    title: '@html'
+                }])
+            })(function (err, result) {
+                if (err) {
+                    reject(err);
+                } else {
+                    // console.log('RES', result);
+                    const pageNumbers = result.items.map(item => parseInt(item.title)).filter(num => !isNaN(num));
+                    resolve(pageNumbers);
+                }
+            });
+        }, 1000); // FIXME : add delay
     });
 }
 
@@ -70,7 +72,7 @@ function scrapeChapterPageImageUrl(pageUrl, delay, retryMax = 3) {
                     resolve(result);
                 }
             });
-        }, delay)
+        }, delay); // FIXME : add delay
     });
 }
 
