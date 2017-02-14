@@ -12,7 +12,7 @@ const x = Xray({
     }
 });
 // add an artificial delay
-x.delay(300, 800);
+x.delay(100, 300);
 
 
 function scrapeChapterPageNumbers(startUrl) {
@@ -57,18 +57,27 @@ function scrapeChapterPageImageUrl(pageUrl) {
     });
 }
 
-function scrapeChapterPages(startUrl) {
+function scrapeChapterPages(startUrl, progress) {
     return scrapeChapterPageUrls(startUrl)
         .then(pageUrls => {
             console.log('page urls:', pageUrls);
             let imageUrls = [];
 
             const scrapers = pageUrls.map((pageUrl) => () => {
-                return scrapeChapterPageImageUrl(pageUrl).then((imageUrl) => imageUrls.push(imageUrl))
+                return scrapeChapterPageImageUrl(pageUrl).then((imageUrl) => {
+                    imageUrls.push(imageUrl);
+                    progress(`Loading page ${imageUrls.length}/${pageUrls.length}`);
+                });
             });
 
             return scrapers.reduce((p, fn) => p.then(fn), Promise.resolve())
-                    .then(() => imageUrls);
+                    .then(() => {
+                        if (pageUrls.length === imageUrls.length) {
+                            return imageUrls;
+                        } else {
+                            throw new Error(`Missing ${pageUrls.length === imageUrls.length} pages. Please try again.`);
+                        }
+                    });
         });
 }
 

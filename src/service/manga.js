@@ -26,8 +26,11 @@ const downloadMangaChapter = (chapter, outDirPath, progressCallback) => {
     const tempDirPath = path.join(outDirPath, `.${chapter.title}`);
 
     progressCallback(chapter, {msg: 'Loading images...', status: 'IN PROGRESS'});
+    const scrapeProgress = (msg) => {
+        progressCallback(chapter, {msg: msg, status: 'IN PROGRESS'});
+    };
 
-    return scrapeChapterPages(chapter.url)
+    return scrapeChapterPages(chapter.url, scrapeProgress)
         .then((imageUrls) => {
             progressCallback(chapter, {msg: `Downloading ${imageUrls.length} images...`, status: 'IN PROGRESS'});
             if (!fs.existsSync(tempDirPath)) {
