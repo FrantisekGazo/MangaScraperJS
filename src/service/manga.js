@@ -59,25 +59,9 @@ const downloadMangaChapter = (chapter, outDirPath, progressCallback) => {
 };
 
 const downloadMangaChapters = (chapters, outDirPath, progressCallback) => {
-    // const downloads = chapters.map(chapter => downloadMangaChapter(chapter, outDirPath, progressCallback));
-    // return Promise.all(downloads);
-
-    // FIXME : execute downloads sequentially
-    let last = null;
-    for (let i = 0; i < chapters.length; i++) {
-        const chapter = chapters[i];
-        if (last == null) {
-            last = downloadMangaChapter(chapter, outDirPath, progressCallback);
-        } else {
-            last = last.then(() => { return downloadMangaChapter(chapter, outDirPath, progressCallback); });
-        }
-    }
-
-    if (last !== null) {
-        return last;
-    } else {
-        return Promise.resolve();
-    }
+    // download chapters sequentially
+    const downloads = chapters.map((chapter) => () => downloadMangaChapter(chapter, outDirPath, progressCallback));
+    return downloads.reduce((p, fn) => p.then(fn), Promise.resolve());
 };
 
 module.exports = {

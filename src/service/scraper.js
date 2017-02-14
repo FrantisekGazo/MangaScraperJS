@@ -11,25 +11,24 @@ const x = Xray({
         }
     }
 });
+// add an artificial delay
+x.delay(300, 800);
 
 
 function scrapeChapterPageNumbers(startUrl) {
     return new Promise(function (resolve, reject) {
-        setInterval(() => {
-            x(startUrl, {
-                items: x('#top_center_bar .l option', [{
-                    title: '@html'
-                }])
-            })(function (err, result) {
-                if (err) {
-                    reject(err);
-                } else {
-                    // console.log('RES', result);
-                    const pageNumbers = result.items.map(item => parseInt(item.title)).filter(num => !isNaN(num));
-                    resolve(pageNumbers);
-                }
-            });
-        }, 1000); // FIXME : add delay
+        x(startUrl, {
+            items: x('#top_center_bar .l option', [{
+                title: '@html'
+            }])
+        })(function (err, result) {
+            if (err) {
+                reject(err);
+            } else {
+                const pageNumbers = result.items.map(item => parseInt(item.title)).filter(num => !isNaN(num));
+                resolve(pageNumbers);
+            }
+        });
     });
 }
 
@@ -39,50 +38,37 @@ function scrapeChapterPageUrls(startUrl) {
 
     return scrapeChapterPageNumbers(startUrl)
         .then((pageNumbers) => {
-            const pageUrls = pageNumbers.map(num => `${baseUrl}${num}.html`);
-            // console.log('PAGES:', pageUrls);
-            return pageUrls;
+            console.log('page numbers:', pageNumbers);
+            return pageNumbers.map(num => `${baseUrl}${num}.html`);
         });
 }
 
-function scrapeChapterPageImageUrl(pageUrl, delay, retryMax = 3) {
+function scrapeChapterPageImageUrl(pageUrl) {
     return new Promise(function (resolve, reject) {
-        setTimeout(() => {
-            x(pageUrl, '#image@src')
-            ((err, result) => {
-                if (err) {
-                    // console.log('reject:', pageUrl, err);
-                    reject(err);
-                } else if (result === undefined) { // retry if image url was not found
-                    if (retryMax <= 0) {
-                        // console.log('MAX', pageUrl, retryMax);
-                        reject(Error('Image not found!'));
-                    } else {
-                        // console.log('RETRY', pageUrl, retryMax);
-                        scrapeChapterPageImageUrl(pageUrl, delay, retryMax - 1)
-                            .then((result) => {
-                                resolve(result);
-                            })
-                            .catch((err) => {
-                                reject(err);
-                            });
-                    }
-                } else {
-                    // console.log('resolve:', pageUrl, result);
-                    resolve(result);
-                }
-            });
-        }, delay); // FIXME : add delay
+        x(pageUrl, '#image@src')((err, result) => {
+            if (err) {
+                reject(err);
+            } else if (result === undefined) {
+                reject(Error('Image not found!'));
+            } else {
+                resolve(result);
+            }
+        });
     });
 }
 
 function scrapeChapterPages(startUrl) {
     return scrapeChapterPageUrls(startUrl)
         .then(pageUrls => {
-            let i = 1; // exec scraps 300ms apart (because web web made a countermeasure against many subsequent requests)
-            return Promise.all(
-                pageUrls.map(pageUrl => scrapeChapterPageImageUrl(pageUrl, (++i) * 300))
-            );
+            console.log('page urls:', pageUrls);
+            let imageUrls = [];
+
+            const scrapers = pageUrls.map((pageUrl) => () => {
+                return scrapeChapterPageImageUrl(pageUrl).then((imageUrl) => imageUrls.push(imageUrl))
+            });
+
+            return scrapers.reduce((p, fn) => p.then(fn), Promise.resolve())
+                    .then(() => imageUrls);
         });
 }
 
@@ -118,23 +104,6 @@ function scrapeMangaInfo(mangaId) {
     });
 }
 
-function mockScrapeMangaInfo(mangaId) {
-    return new Promise(function (resolve, reject) {
-        setTimeout(() => {
-            let chapters = [];
-            let i;
-            for (i = 0; i < 100; i++) {
-                chapters.push({id: `${mangaId}-${i}`, title: `Chapter n.${i}`, url: 'no-url', date: `1.1.1111`, checked: false});
-            }
-
-            resolve({
-                title: `MOCK ${mangaId}`,
-                image: 'no-image',
-                chapters: chapters
-            });
-        }, 2000);
-    });
-}
 
 module.exports = {
     scrapeChapterPages,

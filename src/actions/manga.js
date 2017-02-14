@@ -76,12 +76,14 @@ const toggleChapter = (chapterId) => {
     return createAction(Actions.TOGGLE_CHAPTER, {mangaId: ids[0], chapterId});
 };
 
+const chapterSort = (a, b) => (a.title > b.title) ? 1 : -1;
+
 function downloadChapters() {
     return (dispatch, getState) => {
         const mangaId = getState().selected;
         const manga = getState().mangaLibrary[mangaId];
 
-        let downloadChapters = manga.chapters.filter(chapter => chapter.checked);
+        let downloadChapters = manga.chapters.filter(chapter => chapter.checked).sort(chapterSort);
 
         if (downloadChapters.length == 0) {
             return Promise.resolve();
