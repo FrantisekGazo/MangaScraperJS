@@ -12,7 +12,7 @@ const x = Xray({
     }
 });
 // add an artificial delay
-x.delay(100, 300);
+x.delay(100);
 
 
 function scrapeChapterPageNumbers(startUrl) {
