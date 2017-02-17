@@ -1,6 +1,9 @@
 "use strict";
 
 const React = require('react');
+const TextField = require('material-ui/TextField').default;
+const IconButton = require('material-ui/IconButton').default;
+const IconSearch = require('material-ui/svg-icons/action/search').default;
 
 
 const Selector = ({onSelected}) => {
@@ -11,16 +14,16 @@ const Selector = ({onSelected}) => {
             <form onSubmit={e => {
                 e.preventDefault();
 
-                if (!input.value.trim()) {
+                if (!input || !input.trim()) {
                     return;
                 }
 
-                onSelected(input.value);
+                onSelected(input);
             }}>
-                <input ref={node => {
-                    input = node
-                }}/>
-                <button type="submit">Load</button>
+                <TextField id="'manga-name" onChange={(event, newValue) => input = newValue}/>
+                <IconButton label="Search" type="submit">
+                    <IconSearch/>
+                </IconButton>
             </form>
         </div>
     )

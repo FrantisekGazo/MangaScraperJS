@@ -1,5 +1,10 @@
 "use strict";
 
+// Needed for onTouchTap - that is required by material-ui lib
+// http://stackoverflow.com/a/34015469/988941
+const injectTapEventPlugin = require('react-tap-event-plugin');
+injectTapEventPlugin();
+
 const React = require('react');
 const ReactDOM = require('react-dom');
 const {Provider} = require('react-redux');
