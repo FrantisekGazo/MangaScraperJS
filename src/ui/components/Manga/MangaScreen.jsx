@@ -2,38 +2,72 @@
 
 const React = require('react');
 const AppBar = require('material-ui/AppBar').default;
+const { Card } = require('material-ui/Card');
 const IconBack = require('material-ui/svg-icons/navigation/arrow-back').default;
 const IconButton = require('material-ui/IconButton').default;
 
-const ChapterList = require('./ChapterList.jsx');
+const MangaInfo = require('./MangaInfo.jsx');
 
+
+const style = {
+    appBar: {
+        position: 'fixed',
+        left: 0,
+        right: 0,
+        top: 0,
+    },
+    content: {
+        position: 'relative',
+        top: '70px',
+        bottom: '0px',
+        right: '0px',
+        left: '0px',
+    },
+    left: {
+        display: 'inline-block',
+        position: 'relative',
+        width: '50%',
+        top: '0px',
+        bottom: '0px',
+        left: '0px',
+    },
+    right: {
+        display: 'inline-block',
+        position: 'relative',
+        top: '0px',
+        bottom: '0px',
+        right: '0px',
+        width: '50%',
+    }
+};
 
 class MangaScreen extends React.Component {
 
     render() {
         const { manga, onBackClick, onChapterClick, onDownloadClick } = this.props;
 
-        let infoItems = null;
-        if (manga.downloadInfo) {
-            infoItems = Object.keys(manga.downloadInfo)
-                .map(key => <li key={key}>{key} : {manga.downloadInfo[key].msg}</li>);
-        }
-
         return (
-            <div>
+            <div style={style.base}>
                 <AppBar
+                    style={style.appBar}
                     title={manga.title}
                     iconElementLeft={(<IconButton onTouchTap={onBackClick}><IconBack/></IconButton>)}/>
 
-                <div key={`manga-${manga.title}`}>
-                    <img src={manga.image}/>
-                    <div>
-                        <button onClick={onDownloadClick} disabled={manga.isDownloading}>Download</button>
-                        <ul>
-                            {infoItems}
-                        </ul>
+
+                <div
+                    key={`manga-${manga.title}`}
+                    style={style.content}>
+
+                    <div style={style.left}>
+                        <MangaInfo
+                            manga={manga}
+                            onChapterClick={onChapterClick}
+                            onDownloadClick={onDownloadClick}/>
                     </div>
-                    <ChapterList chapters={manga.chapters} onChapterClick={onChapterClick}/>
+
+                    <div style={style.right}>
+                    </div>
+
                 </div>
             </div>
         );
@@ -41,17 +75,7 @@ class MangaScreen extends React.Component {
 }
 
 MangaScreen.propTypes = {
-    manga: React.PropTypes.shape({
-        title: React.PropTypes.string.isRequired,
-        image: React.PropTypes.string.isRequired,
-        chapters: React.PropTypes.arrayOf(
-            React.PropTypes.shape({
-                id: React.PropTypes.string.isRequired,
-                title: React.PropTypes.string.isRequired,
-                date: React.PropTypes.string.isRequired
-            }).isRequired
-        ).isRequired
-    }).isRequired,
+    manga: React.PropTypes.object.isRequired,
     onBackClick: React.PropTypes.func.isRequired,
     onChapterClick: React.PropTypes.func.isRequired,
     onDownloadClick: React.PropTypes.func.isRequired

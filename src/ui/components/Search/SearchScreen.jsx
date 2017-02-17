@@ -8,6 +8,12 @@ const IconSearch = require('material-ui/svg-icons/action/search').default;
 const TextField = require('material-ui/TextField').default;
 
 const style = {
+    appBar: {
+        position: 'fixed',
+        left: 0,
+        right: 0,
+        top: 0,
+    },
     content: {
         position: 'absolute',
         top: '100px',
@@ -52,12 +58,7 @@ class SearchScreen extends React.Component {
         return (
             <div>
                 <AppBar
-                    style={{
-                        position: 'fixed',
-                        left: 0,
-                        right: 0,
-                        top: 0,
-                    }}
+                    style={style.appBar}
                     title='Manga'
                     iconElementLeft={(<div/>)}/>
 
