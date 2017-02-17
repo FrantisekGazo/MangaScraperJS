@@ -3,7 +3,7 @@
 const ipc = require('electron').ipcRenderer;
 const BrowserWindow = require('electron').remote.BrowserWindow;
 
-const { WorkerTasks, workerTaskProgress, workerTaskEnded } = require('./service/worker');
+const { WorkerTasks, workerTaskProgress, workerTaskEnded } = require('./service/WorkerService');
 const { scrapeMangaInfo } = require('./service/scraper');
 const { downloadMangaChapters } = require('./service/manga');
 

@@ -3,7 +3,7 @@
 const { createAction } = require('./index');
 const { createSetMangaAction } = require('./MangaAction');
 const { createGoToMangaScreenAction, createGoBackAction } = require('./RouterAction');
-const { WorkerTasks, execByWorker } = require('../service/worker');
+const { WorkerTasks, execByWorker } = require('../service/WorkerService');
 
 
 const ACTIONS = {

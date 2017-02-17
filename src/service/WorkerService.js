@@ -20,14 +20,14 @@ function execByWorker(key, arg, progressCallback=null) {
         const window = BrowserWindow.getFocusedWindow();
         const workerWindow = window.getChildWindows()[0];
 
-        workerWindow.webContents.send(key, arg, window.id);
-
         ipcRenderer.on(workerTaskEnded(key), function (event, input, output, err) {
             if (err) {
                 reject(Error(err)); // Error cannot be passed from another process, so wrap it to new one
             } else {
                 resolve(output);
             }
+            ipcRenderer.removeAllListeners(workerTaskEnded(key));
+            ipcRenderer.removeAllListeners(workerTaskProgress(key));
         });
 
         if (progressCallback) {
@@ -35,6 +35,8 @@ function execByWorker(key, arg, progressCallback=null) {
                 progressCallback(progress);
             });
         }
+
+        workerWindow.webContents.send(key, arg, window.id);
     });
 }
 

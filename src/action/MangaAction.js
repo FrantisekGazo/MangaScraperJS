@@ -3,7 +3,7 @@
 const { createAction } = require('./index');
 const { createGoBackAction } = require('./RouterAction');
 const { showSaveDirDialog } = require('../service/dialog');
-const { WorkerTasks, execByWorker } = require('../service/worker');
+const { WorkerTasks, execByWorker } = require('../service/WorkerService');
 const MangaSelector = require('../selector/MangaSelector');
 
 
