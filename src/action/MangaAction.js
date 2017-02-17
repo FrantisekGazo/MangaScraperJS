@@ -9,9 +9,9 @@ const MangaSelector = require('../selector/MangaSelector');
 
 const ACTIONS = {
     SET_MANGA: 'SET_MANGA',
-    TOGGLE_CHAPTER: 'TOGGLE_CHAPTER',
-    DOWNLOAD_CHAPTERS_START: 'DOWNLOAD_CHAPTERS_START',
-    DOWNLOAD_CHAPTERS_END: 'DOWNLOAD_CHAPTERS_END',
+    SHOW_CHAPTER: 'SHOW_CHAPTER',
+    DOWNLOAD_CHAPTER_START: 'DOWNLOAD_CHAPTER_START',
+    DOWNLOAD_CHAPTER_END: 'DOWNLOAD_CHAPTER_END',
     DOWNLOAD_INFO: 'DOWNLOAD_INFO',
 };
 
@@ -21,7 +21,7 @@ const createSetMangaAction = (manga) => {
 };
 
 const createStartChapterDownloadAction = () => {
-    return createAction(ACTIONS.DOWNLOAD_CHAPTERS_START);
+    return createAction(ACTIONS.DOWNLOAD_CHAPTER_START);
 };
 
 const createChapterDownloadInfoAction = (info) => {
@@ -29,11 +29,11 @@ const createChapterDownloadInfoAction = (info) => {
 };
 
 const createEndChapterDownloadAction = () => {
-    return createAction(ACTIONS.DOWNLOAD_CHAPTERS_END);
+    return createAction(ACTIONS.DOWNLOAD_CHAPTER_END);
 };
 
-const createToggleChapterAction = (chapterId) => {
-    return createAction(ACTIONS.TOGGLE_CHAPTER, chapterId);
+const createShowChapterAction = (chapterId) => {
+    return createAction(ACTIONS.SHOW_CHAPTER, chapterId);
 };
 
 
@@ -49,39 +49,29 @@ function goBack() {
     };
 }
 
-function toggleChapter(chapterId) {
+function showChapter(chapterId) {
     return function (dispatcher, getState) {
-        dispatcher(createToggleChapterAction(chapterId));
+        dispatcher(createShowChapterAction(chapterId));
     };
 }
 
 const chapterSort = (a, b) => (a.title > b.title) ? 1 : -1;
 
-function downloadChapters() {
+function downloadShownChapter() {
     return (dispatch, getState) => {
         const state = getState();
-        const manga = MangaSelector.getManga(state);
-
-        let downloadChapters = manga.chapters.filter(chapter => chapter.checked).sort(chapterSort);
-
-        if (downloadChapters.length == 0) {
-            return Promise.resolve();
-        }
+        const chapter = MangaSelector.getShownChapter(state);
 
         dispatch(createStartChapterDownloadAction());
 
-        function downloadChaptersProgress(info) {
+        function downloadChapterProgress(info) {
             dispatch(createChapterDownloadInfoAction(info));
         }
 
         return showSaveDirDialog()
             .then((dirPath) => {
                     return execByWorker(
-                        WorkerTasks.DOWNLOAD_MANGA_CHAPTERS, {
-                            mangaId: manga.id,
-                            chapters: downloadChapters,
-                            dirPath: dirPath
-                        }, downloadChaptersProgress);
+                        WorkerTasks.DOWNLOAD_MANGA_CHAPTER, {chapter, dirPath}, downloadChapterProgress);
                 }
             )
             .then(() => {
@@ -99,8 +89,8 @@ function downloadChapters() {
 module.exports = {
     ACTIONS,
     createSetMangaAction,
-    downloadChapters,
+    downloadShownChapter,
     goBack,
     setManga,
-    toggleChapter,
+    showChapter,
 };

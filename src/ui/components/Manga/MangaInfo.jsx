@@ -1,7 +1,6 @@
 "use strict";
 
 const React = require('react');
-const { Card } = require('material-ui/Card');
 
 const ChapterList = require('./ChapterList.jsx');
 
@@ -9,7 +8,7 @@ const ChapterList = require('./ChapterList.jsx');
 class MangaScreen extends React.Component {
 
     render() {
-        const { manga, onChapterClick, onDownloadClick } = this.props;
+        const { manga, onChapterClick } = this.props;
 
         let infoItems = null;
         if (manga.downloadInfo) {
@@ -19,10 +18,8 @@ class MangaScreen extends React.Component {
 
         return (
             <div>
-
                 <img src={manga.image}/>
                 <div>
-                    <button onClick={onDownloadClick} disabled={manga.isDownloading}>Download</button>
                     <ul>
                         {infoItems}
                     </ul>
@@ -36,7 +33,6 @@ class MangaScreen extends React.Component {
 MangaScreen.propTypes = {
     manga: React.PropTypes.object.isRequired,
     onChapterClick: React.PropTypes.func.isRequired,
-    onDownloadClick: React.PropTypes.func.isRequired
 };
 
 module.exports = MangaScreen;

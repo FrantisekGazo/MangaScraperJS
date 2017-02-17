@@ -9,6 +9,7 @@ const initState = {
     title: '',
     image: '',
     chapters: [],
+    shownChapterId: null,
     error: '',
     isDownloading: false,
     downloadInfo: null
@@ -17,35 +18,13 @@ module.exports = (state = initState, action) => {
     switch (action.type) {
         case ACTIONS.SET_MANGA:
             return action.payload;
-        case ACTIONS.TOGGLE_CHAPTER:
+        case ACTIONS.SHOW_CHAPTER:
             const chapterId = action.payload;
-            let i = 0;
-            let found = false;
-            for (i = 0; i < state.chapters.length; i++) {
-                const chapter = state.chapters[i];
-                if (chapter.id == chapterId) {
-                    found = true;
-                    break;
-                }
-            }
 
-            if (found) {
-                return update(state, {
-                    chapters: {
-                        [i]: {
-                            checked: {
-                                $apply: function (checked) {
-                                    return !checked;
-                                }
-                            }
-                        }
-
-                    }
-                });
-            } else {
-                return state;
-            }
-        case ACTIONS.DOWNLOAD_CHAPTERS_START:
+            return Object.assign({}, state, {
+                shownChapterId: chapterId
+            });
+        case ACTIONS.DOWNLOAD_CHAPTER_START:
             return Object.assign({}, state, {
                 isDownloading: true,
                 downloadInfo: null
@@ -64,7 +43,7 @@ module.exports = (state = initState, action) => {
                     downloadInfo: {$set: {[info.key]: info}}
                 });
             }
-        case ACTIONS.DOWNLOAD_CHAPTERS_END:
+        case ACTIONS.DOWNLOAD_CHAPTER_END:
             return Object.assign({}, state, {
                 isDownloading: false,
             });

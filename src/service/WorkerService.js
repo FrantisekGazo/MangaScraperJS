@@ -4,7 +4,7 @@ const {ipcRenderer} = require('electron');
 
 const WorkerTasks = {
     LOAD_MANGA: 'load-manga',
-    DOWNLOAD_MANGA_CHAPTERS: 'download-manga-chapters'
+    DOWNLOAD_MANGA_CHAPTER: 'download-manga-chapter'
 };
 
 function workerTaskEnded(name) {

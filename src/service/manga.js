@@ -68,5 +68,6 @@ const downloadMangaChapters = (chapters, outDirPath, progressCallback) => {
 };
 
 module.exports = {
-    downloadMangaChapters
+    downloadMangaChapter,
+    downloadMangaChapters,
 };

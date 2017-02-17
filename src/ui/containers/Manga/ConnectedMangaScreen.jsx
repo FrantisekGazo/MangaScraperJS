@@ -12,7 +12,8 @@ module.exports = connect(
     // state to props
     (state) => {
         return {
-            manga: MangaSelector.getManga(state)
+            manga: MangaSelector.getManga(state),
+            shownChapter: MangaSelector.getShownChapter(state),
         };
     },
     // dispatch functions to props
@@ -22,10 +23,10 @@ module.exports = connect(
                 dispatch(MangaAction.goBack());
             },
             onChapterClick: (chapterId) => {
-                dispatch(MangaAction.toggleChapter(chapterId));
+                dispatch(MangaAction.showChapter(chapterId));
             },
             onDownloadClick: () => {
-                dispatch(MangaAction.downloadChapters());
+                dispatch(MangaAction.downloadShownChapter());
             },
         };
     }

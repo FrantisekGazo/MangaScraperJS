@@ -1,21 +1,41 @@
 "use strict";
 
 const React = require('react');
+const { AutoSizer, List } = require('react-virtualized');
 
 const ChapterListItem = require('./ChapterListItem.jsx');
 
 
-const ChapterList = ({chapters, onChapterClick}) => {
-    return <ul>
-        {chapters.map(chapter =>
+class ChapterList extends React.Component {
+
+    renderRow({ index, key, style }) {
+        const {chapters, onChapterClick} = this.props;
+        const chapter = chapters[index];
+        return (
             <ChapterListItem
-                key={chapter.id}
+                key={key}
                 chapter={chapter}
                 onClick={() => onChapterClick(chapter.id)}
-            />
-        )}
-    </ul>
-};
+                style={style}/>
+        );
+    }
+
+    render() {
+        const {chapters} = this.props;
+        return (
+            <AutoSizer>
+                {({ height, width }) => (
+                    <List
+                    height={height}
+                    rowCount={chapters.length}
+                    rowHeight={70}
+                    rowRenderer={this.renderRow.bind(this)}
+                    width={width}/>
+                )}
+            </AutoSizer>
+        );
+    }
+}
 
 ChapterList.propTypes = {
     chapters: React.PropTypes.arrayOf(

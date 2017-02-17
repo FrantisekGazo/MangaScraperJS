@@ -5,7 +5,7 @@ const BrowserWindow = require('electron').remote.BrowserWindow;
 
 const { WorkerTasks, workerTaskProgress, workerTaskEnded } = require('./service/WorkerService');
 const { scrapeMangaInfo } = require('./service/scraper');
-const { downloadMangaChapters } = require('./service/manga');
+const { downloadMangaChapter } = require('./service/manga');
 
 
 ipc.on(WorkerTasks.LOAD_MANGA, function (event, mangaId, callerId) {
@@ -19,23 +19,21 @@ ipc.on(WorkerTasks.LOAD_MANGA, function (event, mangaId, callerId) {
         });
 });
 
-ipc.on(WorkerTasks.DOWNLOAD_MANGA_CHAPTERS, function (event, arg, callerId) {
-    const mangaId = arg.mangaId;
-    const downloadChapters = arg.chapters;
-    const dirPath = arg.dirPath;
+ipc.on(WorkerTasks.DOWNLOAD_MANGA_CHAPTER, function (event, arg, callerId) {
+    const { chapter, dirPath } = arg;
 
     const fromWindow = BrowserWindow.fromId(callerId);
 
-    function downloadChaptersProgress(chapter, info) {
+    function downloadChapterProgress(chapter, info) {
         info = Object.assign(info, {key: chapter.title});
-        fromWindow.webContents.send(workerTaskProgress(WorkerTasks.DOWNLOAD_MANGA_CHAPTERS), mangaId, info);
+        fromWindow.webContents.send(workerTaskProgress(WorkerTasks.DOWNLOAD_MANGA_CHAPTER), arg, info);
     }
 
-    downloadMangaChapters(downloadChapters, dirPath, downloadChaptersProgress)
+    downloadMangaChapter(chapter, dirPath, downloadChapterProgress)
         .then(() => {
-            fromWindow.webContents.send(workerTaskEnded(WorkerTasks.DOWNLOAD_MANGA_CHAPTERS), mangaId, null, null);
+            fromWindow.webContents.send(workerTaskEnded(WorkerTasks.DOWNLOAD_MANGA_CHAPTER), arg, null, null);
         })
         .catch((err) => {
-            fromWindow.webContents.send(workerTaskEnded(WorkerTasks.DOWNLOAD_MANGA_CHAPTERS), mangaId, null, err.message);
+            fromWindow.webContents.send(workerTaskEnded(WorkerTasks.DOWNLOAD_MANGA_CHAPTER), arg, null, err.message);
         });
 });
