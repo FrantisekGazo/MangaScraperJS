@@ -4,8 +4,8 @@ const { ACTIONS } = require('../action/SearchAction');
 
 
 const initState = {
-    loading: false,
     lastTitle: '',
+    loading: false,
     error: '',
 };
 
@@ -13,12 +13,14 @@ const search = (state = initState, action) => {
     switch (action.type) {
         case ACTIONS.SEARCH_START:
             return Object.assign({}, state, {
+                lastTitle: action.payload,
                 loading: true,
-                lastTitle: action.payload
+                error: ''
             });
         case ACTIONS.SEARCH_END:
             return Object.assign({}, state, {
-                loading: false
+                loading: false,
+                error: ''
             });
         case ACTIONS.SEARCH_ERROR:
             return Object.assign({}, state, {
