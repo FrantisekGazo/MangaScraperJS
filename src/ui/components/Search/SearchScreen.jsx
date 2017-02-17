@@ -62,13 +62,16 @@ class SearchScreen extends React.Component {
                     iconElementLeft={(<div/>)}/>
 
                 <div style={style.content}>
-                    <form onSubmit={this.handleSearchClick.bind(this)}>
+                    <form
+                        onSubmit={this.handleSearchClick.bind(this)}>
                         <TextField
                             id="manga-name"
+                            disabled={isLoading}
                             defaultValue={lastTitle}
                             onChange={(event, newValue) => this.input = newValue}/>
 
                         <IconButton
+                            disabled={isLoading}
                             label="Search"
                             type="submit">
                             <IconSearch/>
