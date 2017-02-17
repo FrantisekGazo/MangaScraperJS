@@ -1,11 +1,14 @@
 "use strict";
 
 const { combineReducers } = require("redux");
+const { routerReducer } = require('react-router-redux');
 
-const { selected, mangaLibrary } = require("./manga");
+const mangaLibrary = require("./MangaReducer");
+const search = require("./SearchReducer");
 
 
 module.exports = combineReducers({
-    selected,
-    mangaLibrary
+    routing: routerReducer,
+    search: search,
+    mangaLibrary: mangaLibrary,
 });

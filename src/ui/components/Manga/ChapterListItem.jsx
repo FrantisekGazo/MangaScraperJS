@@ -2,7 +2,7 @@
 
 const React = require('react');
 
-class Chapter extends React.Component {
+class ChapterListItem extends React.Component {
 
     constructor(props) {
         super(props);
@@ -25,7 +25,7 @@ class Chapter extends React.Component {
     }
 }
 
-Chapter.propTypes = {
+ChapterListItem.propTypes = {
     chapter: React.PropTypes.shape({
         title: React.PropTypes.string.isRequired,
         date: React.PropTypes.string.isRequired,
@@ -34,4 +34,4 @@ Chapter.propTypes = {
     onClick: React.PropTypes.func.isRequired
 };
 
-module.exports = Chapter;
+module.exports = ChapterListItem;

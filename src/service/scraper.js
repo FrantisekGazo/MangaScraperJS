@@ -106,7 +106,7 @@ function scrapeMangaInfo(mangaId) {
                 if (title.endsWith(" Manga")) {
                     result.title = title.substr(0, title.length - " Manga".length)
                 }
-                result['mangaId'] = mangaId;
+                result['id'] = mangaId;
                 resolve(result);
             }
         });

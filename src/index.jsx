@@ -8,8 +8,12 @@ injectTapEventPlugin();
 const React = require('react');
 const ReactDOM = require('react-dom');
 const {Provider} = require('react-redux');
+const { hashHistory, IndexRoute, Route, Router } = require('react-router');
+const { syncHistoryWithStore } = require('react-router-redux');
 
-const App = require('./ui/containers/App.jsx');
+const App = require('./ui/components/App.jsx');
+const SearchScreen = require('./ui/containers/Search/ConnectedSearchScreen.jsx');
+const MangaScreen = require('./ui/containers/Manga/ConnectedMangaScreen.jsx');
 const store = require('./store/renderer');
 
 
@@ -27,9 +31,18 @@ if (process.env.NODE_ENV === 'development') {
     });
 }
 
+// Create an enhanced history that syncs navigation events with the store
+const history = syncHistoryWithStore(hashHistory, store);
+
 ReactDOM.render(
     <Provider store={store}>
-        <App />
+        { /* Tell the Router to use our enhanced history */ }
+        <Router history={history}>
+            <Route path='/' component={App}>
+                <IndexRoute component={SearchScreen}/>
+                <Route path='manga/:mangaId' component={MangaScreen}/>
+            </Route>
+        </Router>
     </Provider>,
     document.getElementById('root')
 );

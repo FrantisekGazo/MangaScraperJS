@@ -1,9 +1,11 @@
+"use strict";
+
 const ipc = require('electron').ipcRenderer;
 const BrowserWindow = require('electron').remote.BrowserWindow;
 
-const {WorkerTasks, workerTaskProgress, workerTaskEnded} = require('./service/worker');
-const {scrapeMangaInfo} = require('./service/scraper');
-const {downloadMangaChapters} = require('./service/manga');
+const { WorkerTasks, workerTaskProgress, workerTaskEnded } = require('./service/worker');
+const { scrapeMangaInfo } = require('./service/scraper');
+const { downloadMangaChapters } = require('./service/manga');
 
 
 ipc.on(WorkerTasks.LOAD_MANGA, function (event, mangaId, callerId) {

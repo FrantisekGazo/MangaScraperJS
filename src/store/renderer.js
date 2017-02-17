@@ -2,6 +2,8 @@
 
 const { createStore, applyMiddleware, compose } = require('redux');
 const thunkMiddleware = require('redux-thunk').default;
+const { routerMiddleware } = require('react-router-redux');
+const { hashHistory } = require('react-router');
 
 const reducer = require('../reducer');
 
@@ -16,11 +18,11 @@ if (process.env.NODE_ENV === 'development') {
     });
 
     enhancer = composeEnhancers(
-        applyMiddleware(thunkMiddleware, logger())
+        applyMiddleware(thunkMiddleware, routerMiddleware(hashHistory))
     );
 } else { // production
     enhancer = compose(
-        applyMiddleware(thunkMiddleware)
+        applyMiddleware(thunkMiddleware, routerMiddleware(hashHistory))
     );
 }
 

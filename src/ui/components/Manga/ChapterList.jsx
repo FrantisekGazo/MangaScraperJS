@@ -2,13 +2,13 @@
 
 const React = require('react');
 
-const Chapter = require('./Chapter.jsx');
+const ChapterListItem = require('./ChapterListItem.jsx');
 
 
 const ChapterList = ({chapters, onChapterClick}) => {
     return <ul>
         {chapters.map(chapter =>
-            <Chapter
+            <ChapterListItem
                 key={chapter.id}
                 chapter={chapter}
                 onClick={() => onChapterClick(chapter.id)}
