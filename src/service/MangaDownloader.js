@@ -10,7 +10,7 @@ const PDFService = require('./PDFService');
 const FileService = require('./FileService');
 
 
-function downloadMangaChapter(chapter, outDirPath, progressCallback) {
+function downloadMangaChapter(chapter, outDirPath, fileName, progressCallback) {
     const tempDirPath = path.join(outDirPath, `.${chapter.title}`);
 
     progressCallback(chapter.id, {msg: 'Loading images...', code: DownloadStatusCode.IN_PROGRESS});
@@ -30,7 +30,7 @@ function downloadMangaChapter(chapter, outDirPath, progressCallback) {
         })
         .then((imageFilePaths) => {
             //console.log('All downloaded', imageFilePaths);
-            const filePath = path.join(outDirPath, FileService.getMangaChapterFileName(chapter.title));
+            const filePath = path.join(outDirPath, fileName);
             progressCallback(chapter.id, {msg: `Creating PDF...`, code: DownloadStatusCode.IN_PROGRESS});
             return PDFService.imagesToPdf(imageFilePaths, filePath);
         })
@@ -49,13 +49,6 @@ function downloadMangaChapter(chapter, outDirPath, progressCallback) {
         });
 }
 
-function downloadMangaChapters(chapters, outDirPath, progressCallback) {
-    // download chapters sequentially
-    const downloads = chapters.map((chapter) => () => downloadMangaChapter(chapter, outDirPath, progressCallback));
-    return downloads.reduce((p, fn) => p.then(fn), Promise.resolve());
-}
-
 module.exports = {
     downloadMangaChapter,
-    downloadMangaChapters,
 };

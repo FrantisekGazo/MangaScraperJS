@@ -35,8 +35,7 @@ class ChapterListItem extends React.Component {
                 onClick={onClick}>
                 <ListItem
                     style={itemStyle}
-                    primaryText={chapter.title}
-                    secondaryText={`(${chapter.date})`}/>
+                    primaryText={`${chapter.title} (${chapter.date})`}/>
             </div>
         );
     }

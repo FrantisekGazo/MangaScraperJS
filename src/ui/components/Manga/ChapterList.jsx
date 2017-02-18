@@ -29,7 +29,7 @@ class ChapterList extends React.Component {
                     <List
                         height={height}
                         rowCount={chapters.length}
-                        rowHeight={70}
+                        rowHeight={45}
                         rowRenderer={this.renderRow.bind(this)}
                         width={width}/>
                 )}

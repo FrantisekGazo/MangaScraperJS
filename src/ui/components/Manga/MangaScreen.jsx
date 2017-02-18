@@ -54,8 +54,12 @@ class MangaScreen extends React.Component {
                 <AppBar
                     style={style.appBar}
                     title={manga.title}
-                    iconElementLeft={(<IconButton onTouchTap={onBackClick}><IconBack/></IconButton>)}
-                    iconElementRight={(<IconButton onTouchTap={this.handleOpenClick.bind(this)}><IconOpenFolder/></IconButton>)}/>
+                    iconElementLeft={
+                        <IconButton onTouchTap={onBackClick}><IconBack/></IconButton>
+                    }
+                    iconElementRight={
+                        <IconButton onTouchTap={this.handleOpenClick.bind(this)}><IconOpenFolder/></IconButton>
+                    }/>
 
                 <div style={style.content}>
                     <DownloadInfo

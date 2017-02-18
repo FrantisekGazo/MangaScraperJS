@@ -119,8 +119,22 @@ function scrapeMangaInfo(mangaId) {
                 // map chapters
                 let id = result.chapters.length;
                 let chaptersMap = {};
-                console.log('chapters', result.chapters);
                 result.chapters.map(chapter => {
+                    const numbers = chapter.title.match(/(\d+\.\d+|\d+)$/);
+                    if (numbers.length > 0) {
+                        const last = numbers[numbers.length-1];
+                        const number = parseFloat(last);
+                        if (!isNaN(number)) {
+                            let n = last;
+                            if (number < 10) {
+                                n = '00' + n;
+                            } else if (number < 100) {
+                                n = '0' + n;
+                            }
+                            chapter.title = n;
+                        }
+                    }
+
                     id -= 1;
                     const c = Object.assign(chapter, {
                         id: `${mangaId}-${id}`,

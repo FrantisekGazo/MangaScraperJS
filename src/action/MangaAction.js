@@ -98,7 +98,12 @@ function downloadNextChapter(dispatch, getState) {
 
     const mangaTitle = MangaSelector.getManga(state).title;
     const managaDirPath = FileService.getMangaDirectory(mangaTitle);
-    return execByWorker(WorkerTasks.DOWNLOAD_MANGA_CHAPTER, {chapter, path: managaDirPath}, downloadChapterProgress)
+    const arg = {
+        chapter,
+        dirPath: managaDirPath,
+        fileName: FileService.getMangaChapterFileName(mangaTitle, chapter.title)
+    };
+    return execByWorker(WorkerTasks.DOWNLOAD_MANGA_CHAPTER, arg, downloadChapterProgress)
         .then(() => {
             dispatch(createEndChapterDownloadAction());
             return downloadNextChapter(dispatch, getState);

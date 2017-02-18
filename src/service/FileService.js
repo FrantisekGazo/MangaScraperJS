@@ -52,11 +52,11 @@ function showSaveDirDialog() {
 }
 
 function getMangaChapterFile(mangaTitle, chapterTitle) {
-    return path.join(getMangaDirectory(mangaTitle), getMangaChapterFileName(chapterTitle));
+    return path.join(getMangaDirectory(mangaTitle), getMangaChapterFileName(mangaTitle, chapterTitle));
 }
 
-function getMangaChapterFileName(chapterTitle) {
-    return chapterTitle + '.pdf';
+function getMangaChapterFileName(mangaTitle, chapterTitle) {
+    return `${mangaTitle} ${chapterTitle}.pdf`;
 }
 
 function getMangaDirectory(title) {
