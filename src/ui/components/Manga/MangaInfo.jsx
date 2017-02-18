@@ -6,7 +6,7 @@ const TextField = require('material-ui/TextField').default;
 const ChapterList = require('./ChapterList.jsx');
 
 
-class MangaScreen extends React.Component {
+class MangaInfo extends React.Component {
 
     constructor(props) {
         super(props);
@@ -56,10 +56,10 @@ class MangaScreen extends React.Component {
     }
 }
 
-MangaScreen.propTypes = {
+MangaInfo.propTypes = {
     manga: React.PropTypes.object.isRequired,
     chapters: React.PropTypes.array.isRequired,
     onChapterClick: React.PropTypes.func.isRequired,
 };
 
-module.exports = MangaScreen;
+module.exports = MangaInfo;

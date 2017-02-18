@@ -20,7 +20,7 @@ ipc.on(WorkerTasks.LOAD_MANGA, function (event, mangaId, callerId) {
 });
 
 ipc.on(WorkerTasks.DOWNLOAD_MANGA_CHAPTER, function (event, arg, callerId) {
-    const { chapter, dirPath } = arg;
+    const { chapter, path } = arg;
 
     const fromWindow = BrowserWindow.fromId(callerId);
 
@@ -28,7 +28,7 @@ ipc.on(WorkerTasks.DOWNLOAD_MANGA_CHAPTER, function (event, arg, callerId) {
         fromWindow.webContents.send(workerTaskProgress(WorkerTasks.DOWNLOAD_MANGA_CHAPTER), arg, {chapterId, status});
     }
 
-    downloadMangaChapter(chapter, dirPath, downloadChapterProgress)
+    downloadMangaChapter(chapter, path, downloadChapterProgress)
         .then(() => {
             fromWindow.webContents.send(workerTaskEnded(WorkerTasks.DOWNLOAD_MANGA_CHAPTER), arg, null, null);
         })

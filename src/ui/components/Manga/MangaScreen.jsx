@@ -5,8 +5,9 @@ const AppBar = require('material-ui/AppBar').default;
 const IconBack = require('material-ui/svg-icons/navigation/arrow-back').default;
 const IconButton = require('material-ui/IconButton').default;
 
-const MangaInfo = require('./MangaInfo.jsx');
 const ChapterDetail = require('./ChapterDetail.jsx');
+const DownloadInfo = require('./DownloadInfo.jsx');
+const MangaInfo = require('./MangaInfo.jsx');
 
 
 const style = {
@@ -25,26 +26,21 @@ const style = {
     },
     left: {
         display: 'inline-block',
-        position: 'absolute',
+        float: 'left',
         width: '250px',
-        top: '0px',
-        bottom: '0px',
-        left: '0px',
+        padding: '10px',
     },
     right: {
         display: 'inline-block',
-        position: 'absolute',
-        top: '0px',
-        bottom: '0px',
-        right: '0px',
-        left: '250px',
+        float: 'left',
+        padding: '10px',
     }
 };
 
 class MangaScreen extends React.Component {
 
     render() {
-        const { manga, chapters, shownChapter, onBackClick, onChapterClick, onDownloadClick } = this.props;
+        const { manga, chapters, downloadingChapters, shownChapter, onBackClick, onChapterClick, onDownloadClick } = this.props;
 
         return (
             <div style={style.base}>
@@ -53,9 +49,10 @@ class MangaScreen extends React.Component {
                     title={manga.title}
                     iconElementLeft={(<IconButton onTouchTap={onBackClick}><IconBack/></IconButton>)}/>
 
-                <div
-                    key={`manga-${manga.title}`}
-                    style={style.content}>
+                <div style={style.content}>
+                    <DownloadInfo
+                        isDownloading={manga.isDownloading}
+                        chapters={downloadingChapters}/>
 
                     <div style={style.left}>
                         <MangaInfo
@@ -83,6 +80,7 @@ class MangaScreen extends React.Component {
 MangaScreen.propTypes = {
     manga: React.PropTypes.object.isRequired,
     chapters: React.PropTypes.array.isRequired,
+    downloadingChapters: React.PropTypes.array.isRequired,
     shownChapter: React.PropTypes.object,
     onBackClick: React.PropTypes.func.isRequired,
     onChapterClick: React.PropTypes.func.isRequired,

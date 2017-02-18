@@ -1,5 +1,9 @@
 "use strict";
 
+const { app } = require('electron').remote;
+const path = require('path');
+const fs = require('fs');
+
 const { createAction } = require('./index');
 const { createGoBackAction } = require('./RouterAction');
 const { showSaveDirDialog } = require('../service/dialog');
@@ -64,11 +68,14 @@ function downloadShownChapter() {
     return (dispatch, getState) => {
         const state = getState();
         const chapterId = MangaSelector.getShownChapterId(state);
+        const ids = MangaSelector.getDownloadChapterIds(state);
 
-        dispatch(createEnqueueChapterDownloadAction(chapterId));
-        // setTimeout(() => {
+        if (ids.indexOf(chapterId) === -1) {
+            dispatch(createEnqueueChapterDownloadAction(chapterId));
             return downloadNextChapter(dispatch, getState);
-        // }, 500);
+        } else {
+            return Promise.resolve();
+        }
     }
 }
 
@@ -93,12 +100,9 @@ function downloadNextChapter(dispatch, getState) {
         dispatch(createChapterDownloadStatusAction(chapterId, status));
     }
 
-    return showSaveDirDialog()
-        .then((dirPath) => {
-                return execByWorker(
-                    WorkerTasks.DOWNLOAD_MANGA_CHAPTER, {chapter, dirPath}, downloadChapterProgress);
-            }
-        )
+    const mangaTitle = MangaSelector.getManga(state).title;
+    const managaDirPath = getMangaDirectory(mangaTitle);
+    return execByWorker(WorkerTasks.DOWNLOAD_MANGA_CHAPTER, {chapter, path: managaDirPath}, downloadChapterProgress)
         .then(() => {
             dispatch(createEndChapterDownloadAction());
             return downloadNextChapter(dispatch, getState);
@@ -106,7 +110,20 @@ function downloadNextChapter(dispatch, getState) {
         .catch((err) => {
             dispatch(createEndChapterDownloadAction());
             console.log('Download failed:', err);
+            return downloadNextChapter(dispatch, getState);
         });
+}
+
+function getMangaDirectory(title) {
+    const appPath = path.join(app.getPath('downloads'), 'MangaSraper');
+    if (!fs.existsSync(appPath)) {
+        fs.mkdirSync(appPath);
+    }
+    const managaDirPath = path.join(appPath, title);
+    if (!fs.existsSync(managaDirPath)) {
+        fs.mkdirSync(managaDirPath);
+    }
+    return managaDirPath;
 }
 
 

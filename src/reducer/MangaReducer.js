@@ -58,8 +58,7 @@ function enqueueChapterDonload(state, action) {
 
 function chapterDonloadStart(state, action) {
     return Object.assign({}, state, {
-        isDownloading: true,
-        downloadChapterIds: state.downloadChapterIds.slice(1, state.downloadChapterIds.length)
+        isDownloading: true
     });
 }
 
@@ -77,6 +76,7 @@ function chapterDonloadStatus(state, action) {
 
 function chapterDonloadEnd(state, action) {
     return Object.assign({}, state, {
-        isDownloading: false
+        isDownloading: false,
+        downloadChapterIds: state.downloadChapterIds.slice(1, state.downloadChapterIds.length)
     });
 }

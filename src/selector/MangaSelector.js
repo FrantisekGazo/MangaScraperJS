@@ -47,6 +47,11 @@ const getDownloadChapterIds = (state) => {
     return manga.downloadChapterIds;
 };
 
+const getDownloadChapters = (state) => {
+    const manga = mangaState(state);
+    return manga.downloadChapterIds.map(id => getChapter(state, id));
+};
+
 const isDownloading = (state) => {
     const manga = mangaState(state);
     return manga.isDownloading;
@@ -56,6 +61,7 @@ const isDownloading = (state) => {
 module.exports = {
     getChapter,
     getDownloadChapterIds,
+    getDownloadChapters,
     getManga,
     getMangaChapters,
     getShownChapter,
