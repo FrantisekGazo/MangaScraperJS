@@ -12,7 +12,7 @@ const ACTIONS = {
     SHOW_CHAPTER: 'SHOW_CHAPTER',
     DOWNLOAD_CHAPTER_START: 'DOWNLOAD_CHAPTER_START',
     DOWNLOAD_CHAPTER_END: 'DOWNLOAD_CHAPTER_END',
-    DOWNLOAD_INFO: 'DOWNLOAD_INFO',
+    UPDATE_CHAPTER_DOWNLOAD_STATUS: 'UPDATE_CHAPTER_DOWNLOAD_STATUS',
 };
 
 
@@ -24,8 +24,8 @@ const createStartChapterDownloadAction = () => {
     return createAction(ACTIONS.DOWNLOAD_CHAPTER_START);
 };
 
-const createChapterDownloadInfoAction = (info) => {
-    return createAction(ACTIONS.DOWNLOAD_INFO, info);
+const createChapterDownloadStatusAction = (id, status) => {
+    return createAction(ACTIONS.UPDATE_CHAPTER_DOWNLOAD_STATUS, {id, status});
 };
 
 const createEndChapterDownloadAction = () => {
@@ -55,8 +55,6 @@ function showChapter(chapterId) {
     };
 }
 
-const chapterSort = (a, b) => (a.title > b.title) ? 1 : -1;
-
 function downloadShownChapter() {
     return (dispatch, getState) => {
         const state = getState();
@@ -64,8 +62,8 @@ function downloadShownChapter() {
 
         dispatch(createStartChapterDownloadAction());
 
-        function downloadChapterProgress(info) {
-            dispatch(createChapterDownloadInfoAction(info));
+        function downloadChapterProgress({chapterId, status}) {
+            dispatch(createChapterDownloadStatusAction(chapterId, status));
         }
 
         return showSaveDirDialog()

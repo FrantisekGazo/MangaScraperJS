@@ -1,5 +1,7 @@
 "use strict";
 
+const DownloadStatus = require('../model/DownloadState');
+
 const Xray = require('x-ray');
 const x = Xray({
     filters: {
@@ -97,16 +99,30 @@ function scrapeMangaInfo(mangaId) {
             } else if (!('title' in result)) {
                 reject(Error("Manga not found!"));
             } else {
-                let id = 0;
-                result.chapters = result.chapters.map(chapter => {
-                    id += 1;
-                    return Object.assign(chapter, {id: `${mangaId}-${id}`, checked: false})
-                });
+                // manga id
+                result['id'] = mangaId;
+                // fix title
                 let title = result.title;
                 if (title.endsWith(" Manga")) {
                     result.title = title.substr(0, title.length - " Manga".length)
                 }
-                result['id'] = mangaId;
+                // map chapters
+                let id = result.chapters.length;
+                let chaptersMap = {};
+                console.log('chapters', result.chapters);
+                result.chapters.map(chapter => {
+                    id -= 1;
+                    const c = Object.assign(chapter, {
+                        id: `${mangaId}-${id}`,
+                        status: {
+                            code: DownloadStatus.NONE,
+                            msg: ''
+                        }
+                    });
+                    chaptersMap[c.id] = c;
+                });
+                result.chapters = chaptersMap;
+
                 resolve(result);
             }
         });

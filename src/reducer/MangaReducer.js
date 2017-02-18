@@ -6,13 +6,16 @@ const { ACTIONS } = require('../action/MangaAction');
 
 
 const initState = {
+    // info
     title: '',
     image: '',
-    chapters: [],
+    chapters: {},
     shownChapterId: null,
+    // error
     error: '',
+    // download
+    downloadChapterIds: [],
     isDownloading: false,
-    downloadInfo: null
 };
 module.exports = (state = initState, action) => {
     switch (action.type) {
@@ -26,26 +29,21 @@ module.exports = (state = initState, action) => {
             });
         case ACTIONS.DOWNLOAD_CHAPTER_START:
             return Object.assign({}, state, {
-                isDownloading: true,
-                downloadInfo: null
+                isDownloading: true
             });
-        case ACTIONS.DOWNLOAD_INFO:
-            const info = action.payload;
+        case ACTIONS.UPDATE_CHAPTER_DOWNLOAD_STATUS:
+            const { id, status } = action.payload;
 
-            if (state.downloadInfo) {
-                return update(state, {
-                    downloadInfo: {
-                        [info.key]: {$set: info}
+            return update(state, {
+                chapters: {
+                    [id]: {
+                        status: {$set: status}
                     }
-                });
-            } else {
-                return update(state, {
-                    downloadInfo: {$set: {[info.key]: info}}
-                });
-            }
+                }
+            });
         case ACTIONS.DOWNLOAD_CHAPTER_END:
             return Object.assign({}, state, {
-                isDownloading: false,
+                isDownloading: false
             });
         default:
             return state

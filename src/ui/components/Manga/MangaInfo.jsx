@@ -1,30 +1,56 @@
 "use strict";
 
 const React = require('react');
+const TextField = require('material-ui/TextField').default;
 
 const ChapterList = require('./ChapterList.jsx');
 
 
 class MangaScreen extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            chapters: props.chapters
+        };
+    }
+
+    handleFilter(event, newValue) {
+        const allChapters = this.props.chapters;
+        let chapters = [];
+
+        if (newValue) {
+            let chapter;
+            for (let i = 0; i < allChapters.length; i++) {
+                chapter = allChapters[i];
+                if (chapter.title.indexOf(newValue) >= 0) {
+                    chapters.push(chapter);
+                }
+            }
+        } else {
+            chapters = allChapters;
+        }
+
+        this.setState({
+            chapters: chapters
+        });
+    }
+
     render() {
         const { manga, onChapterClick } = this.props;
-
-        let infoItems = null;
-        if (manga.downloadInfo) {
-            infoItems = Object.keys(manga.downloadInfo)
-                .map(key => <li key={key}>{key} : {manga.downloadInfo[key].msg}</li>);
-        }
+        const { chapters } = this.state;
 
         return (
             <div>
                 <img src={manga.image}/>
-                <div>
-                    <ul>
-                        {infoItems}
-                    </ul>
-                </div>
-                <ChapterList chapters={manga.chapters} onChapterClick={onChapterClick}/>
+
+                <TextField
+                    id='chapter-filter'
+                    onChange={this.handleFilter.bind(this)}/>
+
+                <ChapterList
+                    chapters={chapters}
+                    onChapterClick={onChapterClick}/>
             </div>
         );
     }
@@ -32,6 +58,7 @@ class MangaScreen extends React.Component {
 
 MangaScreen.propTypes = {
     manga: React.PropTypes.object.isRequired,
+    chapters: React.PropTypes.array.isRequired,
     onChapterClick: React.PropTypes.func.isRequired,
 };
 

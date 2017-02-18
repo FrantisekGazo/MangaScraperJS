@@ -24,9 +24,8 @@ ipc.on(WorkerTasks.DOWNLOAD_MANGA_CHAPTER, function (event, arg, callerId) {
 
     const fromWindow = BrowserWindow.fromId(callerId);
 
-    function downloadChapterProgress(chapter, info) {
-        info = Object.assign(info, {key: chapter.title});
-        fromWindow.webContents.send(workerTaskProgress(WorkerTasks.DOWNLOAD_MANGA_CHAPTER), arg, info);
+    function downloadChapterProgress(chapterId, status) {
+        fromWindow.webContents.send(workerTaskProgress(WorkerTasks.DOWNLOAD_MANGA_CHAPTER), arg, {chapterId, status});
     }
 
     downloadMangaChapter(chapter, dirPath, downloadChapterProgress)

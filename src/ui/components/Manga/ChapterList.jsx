@@ -38,15 +38,8 @@ class ChapterList extends React.Component {
 }
 
 ChapterList.propTypes = {
-    chapters: React.PropTypes.arrayOf(
-        React.PropTypes.shape({
-            id: React.PropTypes.string.isRequired,
-            title: React.PropTypes.string.isRequired,
-            date: React.PropTypes.string.isRequired,
-            checked: React.PropTypes.bool.isRequired
-        }).isRequired
-    ).isRequired,
-    onChapterClick: React.PropTypes.func.isRequired
+    chapters: React.PropTypes.array.isRequired,
+    onChapterClick: React.PropTypes.func.isRequired,
 };
 
 module.exports = ChapterList;

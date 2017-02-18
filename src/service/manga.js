@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 
+const DownloadState = require('../model/DownloadState');
 const {scrapeChapterPages} = require('./scraper');
 const {downloadImages} = require('./image');
 const {imgToPdf} = require('./pdf');
@@ -25,14 +26,14 @@ const deleteFolderRecursive = (dirPath) => {
 const downloadMangaChapter = (chapter, outDirPath, progressCallback) => {
     const tempDirPath = path.join(outDirPath, `.${chapter.title}`);
 
-    progressCallback(chapter, {msg: 'Loading images...', status: 'IN PROGRESS'});
+    progressCallback(chapter.id, {msg: 'Loading images...', code: DownloadState.IN_PROGRESS});
     const scrapeProgress = (msg) => {
-        progressCallback(chapter, {msg: msg, status: 'IN PROGRESS'});
+        progressCallback(chapter.id, {msg: msg, code: DownloadState.IN_PROGRESS});
     };
 
     return scrapeChapterPages(chapter.url, scrapeProgress)
         .then((imageUrls) => {
-            progressCallback(chapter, {msg: `Downloading ${imageUrls.length} images...`, status: 'IN PROGRESS'});
+            progressCallback(chapter.id, {msg: `Downloading ${imageUrls.length} images...`, code: DownloadState.IN_PROGRESS});
             if (!fs.existsSync(tempDirPath)) {
                 fs.mkdirSync(tempDirPath);
             }
@@ -43,7 +44,7 @@ const downloadMangaChapter = (chapter, outDirPath, progressCallback) => {
         .then((imageFilePaths) => {
             //console.log('All downloaded', imageFilePaths);
             const filePath = path.join(outDirPath, `${chapter.title}.pdf`);
-            progressCallback(chapter, {msg: `Creating PDF...`, status: 'IN PROGRESS'});
+            progressCallback(chapter.id, {msg: `Creating PDF...`, code: DownloadState.IN_PROGRESS});
             return imgToPdf(imageFilePaths, filePath);
         })
         .then((filePath) => {
@@ -53,11 +54,11 @@ const downloadMangaChapter = (chapter, outDirPath, progressCallback) => {
             }
 
             //console.log('Done', filePath);
-            progressCallback(chapter, {msg: 'Done', status: 'DONE', output: filePath});
+            progressCallback(chapter.id, {msg: `Done (${filePath})`, code: DownloadState.DONE});
             return Promise.resolve();
         })
         .catch((err) => {
-            progressCallback(chapter, {msg: err.message, status: 'FAILED'});
+            progressCallback(chapter.id, {msg: err.message, code: DownloadState.FAILED});
         });
 };
 

@@ -13,6 +13,7 @@ module.exports = connect(
     (state) => {
         return {
             manga: MangaSelector.getManga(state),
+            chapters: MangaSelector.getMangaChapters(state),
             shownChapter: MangaSelector.getShownChapter(state),
         };
     },

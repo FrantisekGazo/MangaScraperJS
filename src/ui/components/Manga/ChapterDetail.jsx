@@ -12,8 +12,10 @@ class ChapterDetail extends React.Component {
 
         return (
             <div>
-               {chapter.title}
-               <IconButton onTouchTap={onDownloadClick}><IconDownload/></IconButton>
+                {chapter.title}
+                <IconButton onTouchTap={onDownloadClick}><IconDownload/></IconButton>
+                <br/>
+                {chapter.status.msg}
             </div>
         );
     }

@@ -44,7 +44,7 @@ const style = {
 class MangaScreen extends React.Component {
 
     render() {
-        const { manga, shownChapter, onBackClick, onChapterClick, onDownloadClick } = this.props;
+        const { manga, chapters, shownChapter, onBackClick, onChapterClick, onDownloadClick } = this.props;
 
         return (
             <div style={style.base}>
@@ -60,11 +60,18 @@ class MangaScreen extends React.Component {
                     <div style={style.left}>
                         <MangaInfo
                             manga={manga}
+                            chapters={chapters}
                             onChapterClick={onChapterClick}/>
                     </div>
 
                     <div style={style.right}>
-                        {shownChapter ? (<ChapterDetail chapter={shownChapter} onDownloadClick={onDownloadClick}/>) : null}
+                        {
+                            shownChapter ? (
+                                <ChapterDetail
+                                    chapter={shownChapter}
+                                    onDownloadClick={onDownloadClick}/>
+                            ) : null
+                        }
                     </div>
 
                 </div>
@@ -75,6 +82,7 @@ class MangaScreen extends React.Component {
 
 MangaScreen.propTypes = {
     manga: React.PropTypes.object.isRequired,
+    chapters: React.PropTypes.array.isRequired,
     shownChapter: React.PropTypes.object,
     onBackClick: React.PropTypes.func.isRequired,
     onChapterClick: React.PropTypes.func.isRequired,
