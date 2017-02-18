@@ -6,7 +6,6 @@ const fs = require('fs');
 
 const { createAction } = require('./index');
 const { createGoBackAction } = require('./RouterAction');
-const { showSaveDirDialog } = require('../service/dialog');
 const { WorkerTasks, execByWorker } = require('../service/WorkerService');
 const MangaSelector = require('../selector/MangaSelector');
 

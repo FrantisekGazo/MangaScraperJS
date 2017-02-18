@@ -4,13 +4,13 @@ const ipc = require('electron').ipcRenderer;
 const BrowserWindow = require('electron').remote.BrowserWindow;
 
 const { WorkerTasks, workerTaskProgress, workerTaskEnded } = require('./service/WorkerService');
-const { scrapeMangaInfo } = require('./service/scraper');
-const { downloadMangaChapter } = require('./service/manga');
+const ScraperService = require('./service/ScraperService');
+const MangaDownloader = require('./service/MangaDownloader');
 
 
 ipc.on(WorkerTasks.LOAD_MANGA, function (event, mangaId, callerId) {
     const fromWindow = BrowserWindow.fromId(callerId);
-    scrapeMangaInfo(mangaId)
+    ScraperService.scrapeMangaInfo(mangaId)
         .then((manga) => {
             fromWindow.webContents.send(workerTaskEnded(WorkerTasks.LOAD_MANGA), mangaId, manga, null);
         })
@@ -28,7 +28,7 @@ ipc.on(WorkerTasks.DOWNLOAD_MANGA_CHAPTER, function (event, arg, callerId) {
         fromWindow.webContents.send(workerTaskProgress(WorkerTasks.DOWNLOAD_MANGA_CHAPTER), arg, {chapterId, status});
     }
 
-    downloadMangaChapter(chapter, path, downloadChapterProgress)
+    MangaDownloader.downloadMangaChapter(chapter, path, downloadChapterProgress)
         .then(() => {
             fromWindow.webContents.send(workerTaskEnded(WorkerTasks.DOWNLOAD_MANGA_CHAPTER), arg, null, null);
         })
