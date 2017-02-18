@@ -10,6 +10,7 @@ const MangaSelector = require('../selector/MangaSelector');
 const ACTIONS = {
     SET_MANGA: 'SET_MANGA',
     SHOW_CHAPTER: 'SHOW_CHAPTER',
+    ENQUEUE_CHAPTER_DOWNLOAD: 'ENQUEUE_CHAPTER_DOWNLOAD',
     DOWNLOAD_CHAPTER_START: 'DOWNLOAD_CHAPTER_START',
     DOWNLOAD_CHAPTER_END: 'DOWNLOAD_CHAPTER_END',
     UPDATE_CHAPTER_DOWNLOAD_STATUS: 'UPDATE_CHAPTER_DOWNLOAD_STATUS',
@@ -18,6 +19,10 @@ const ACTIONS = {
 
 const createSetMangaAction = (manga) => {
     return createAction(ACTIONS.SET_MANGA, manga);
+};
+
+const createEnqueueChapterDownloadAction = (chapterId) => {
+    return createAction(ACTIONS.ENQUEUE_CHAPTER_DOWNLOAD, chapterId);
 };
 
 const createStartChapterDownloadAction = () => {
@@ -58,29 +63,50 @@ function showChapter(chapterId) {
 function downloadShownChapter() {
     return (dispatch, getState) => {
         const state = getState();
-        const chapter = MangaSelector.getShownChapter(state);
+        const chapterId = MangaSelector.getShownChapterId(state);
 
-        dispatch(createStartChapterDownloadAction());
-
-        function downloadChapterProgress({chapterId, status}) {
-            dispatch(createChapterDownloadStatusAction(chapterId, status));
-        }
-
-        return showSaveDirDialog()
-            .then((dirPath) => {
-                    return execByWorker(
-                        WorkerTasks.DOWNLOAD_MANGA_CHAPTER, {chapter, dirPath}, downloadChapterProgress);
-                }
-            )
-            .then(() => {
-                dispatch(createEndChapterDownloadAction());
-                return Promise.resolve();
-            })
-            .catch((err) => {
-                dispatch(createEndChapterDownloadAction());
-                console.log('Download failed:', err);
-            });
+        dispatch(createEnqueueChapterDownloadAction(chapterId));
+        // setTimeout(() => {
+            return downloadNextChapter(dispatch, getState);
+        // }, 500);
     }
+}
+
+function downloadNextChapter(dispatch, getState) {
+    const state = getState();
+
+    if (MangaSelector.isDownloading(state)) {
+        return;
+    }
+
+    const chapterIds = MangaSelector.getDownloadChapterIds(state);
+
+    if (chapterIds.length === 0) {
+        return;
+    }
+
+    const chapter = MangaSelector.getChapter(state, chapterIds[0]);
+
+    dispatch(createStartChapterDownloadAction());
+
+    function downloadChapterProgress({chapterId, status}) {
+        dispatch(createChapterDownloadStatusAction(chapterId, status));
+    }
+
+    return showSaveDirDialog()
+        .then((dirPath) => {
+                return execByWorker(
+                    WorkerTasks.DOWNLOAD_MANGA_CHAPTER, {chapter, dirPath}, downloadChapterProgress);
+            }
+        )
+        .then(() => {
+            dispatch(createEndChapterDownloadAction());
+            return downloadNextChapter(dispatch, getState);
+        })
+        .catch((err) => {
+            dispatch(createEndChapterDownloadAction());
+            console.log('Download failed:', err);
+        });
 }
 
 

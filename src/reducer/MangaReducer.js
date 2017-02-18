@@ -20,32 +20,63 @@ const initState = {
 module.exports = (state = initState, action) => {
     switch (action.type) {
         case ACTIONS.SET_MANGA:
-            return action.payload;
+            return setManga(state, action);
         case ACTIONS.SHOW_CHAPTER:
-            const chapterId = action.payload;
-
-            return Object.assign({}, state, {
-                shownChapterId: chapterId
-            });
+            return showChapter(state, action);
         case ACTIONS.DOWNLOAD_CHAPTER_START:
-            return Object.assign({}, state, {
-                isDownloading: true
-            });
+            return chapterDonloadStart(state, action);
+        case ACTIONS.ENQUEUE_CHAPTER_DOWNLOAD:
+            return enqueueChapterDonload(state, action);
         case ACTIONS.UPDATE_CHAPTER_DOWNLOAD_STATUS:
-            const { id, status } = action.payload;
-
-            return update(state, {
-                chapters: {
-                    [id]: {
-                        status: {$set: status}
-                    }
-                }
-            });
+            return chapterDonloadStatus(state, action);
         case ACTIONS.DOWNLOAD_CHAPTER_END:
-            return Object.assign({}, state, {
-                isDownloading: false
-            });
+            return chapterDonloadEnd(state, action);
         default:
-            return state
+            return state;
     }
 };
+
+
+function setManga(state, action) {
+    return Object.assign({}, initState, action.payload);
+}
+
+function showChapter(state, action) {
+    const chapterId = action.payload;
+
+    return Object.assign({}, state, {
+        shownChapterId: chapterId
+    });
+}
+
+function enqueueChapterDonload(state, action) {
+    const chapterId = action.payload;
+    return Object.assign({}, state, {
+        downloadChapterIds: state.downloadChapterIds.concat([chapterId])
+    });
+}
+
+function chapterDonloadStart(state, action) {
+    return Object.assign({}, state, {
+        isDownloading: true,
+        downloadChapterIds: state.downloadChapterIds.slice(1, state.downloadChapterIds.length)
+    });
+}
+
+function chapterDonloadStatus(state, action) {
+    const { id, status } = action.payload;
+
+    return update(state, {
+        chapters: {
+            [id]: {
+                status: {$set: status}
+            }
+        }
+    });
+}
+
+function chapterDonloadEnd(state, action) {
+    return Object.assign({}, state, {
+        isDownloading: false
+    });
+}

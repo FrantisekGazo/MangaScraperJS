@@ -27,15 +27,38 @@ const getMangaChapters = (state) => {
     return chapters.sort(chapterSort);
 };
 
-const getShownChapter = (state) => {
+const getChapter = (state, chapterId) => {
     const manga = mangaState(state);
-    const chapterId = manga.shownChapterId;
     return manga.chapters[chapterId];
+};
+
+const getShownChapterId = (state) => {
+    const manga = mangaState(state);
+    return manga.shownChapterId;
+};
+
+const getShownChapter = (state) => {
+    const chapterId = getShownChapterId(state);
+    return getChapter(state, chapterId);
+};
+
+const getDownloadChapterIds = (state) => {
+    const manga = mangaState(state);
+    return manga.downloadChapterIds;
+};
+
+const isDownloading = (state) => {
+    const manga = mangaState(state);
+    return manga.isDownloading;
 };
 
 
 module.exports = {
+    getChapter,
+    getDownloadChapterIds,
     getManga,
     getMangaChapters,
     getShownChapter,
+    getShownChapterId,
+    isDownloading,
 };
