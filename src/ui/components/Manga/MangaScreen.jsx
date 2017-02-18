@@ -58,6 +58,7 @@ class MangaScreen extends React.Component {
                         <MangaInfo
                             manga={manga}
                             chapters={chapters}
+                            shownChapterId={shownChapter ? shownChapter.id : ''}
                             onChapterClick={onChapterClick}/>
                     </div>
 

@@ -46,7 +46,7 @@ class MangaInfo extends React.Component {
     }
 
     render() {
-        const { manga, onChapterClick } = this.props;
+        const { manga, onChapterClick, shownChapterId } = this.props;
         const { chapters } = this.state;
 
         return (
@@ -55,10 +55,12 @@ class MangaInfo extends React.Component {
 
                 <TextField
                     id='chapter-filter'
+                    floatingLabelText='Search'
                     onChange={this.handleFilter.bind(this)}/>
 
                 <ChapterList
                     chapters={chapters}
+                    shownChapterId={shownChapterId}
                     onChapterClick={onChapterClick}/>
             </div>
         );
@@ -68,6 +70,7 @@ class MangaInfo extends React.Component {
 MangaInfo.propTypes = {
     manga: React.PropTypes.object.isRequired,
     chapters: React.PropTypes.array.isRequired,
+    shownChapterId: React.PropTypes.string.isRequired,
     onChapterClick: React.PropTypes.func.isRequired,
 };
 

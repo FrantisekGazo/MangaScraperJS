@@ -67,6 +67,7 @@ class SearchScreen extends React.Component {
                         onSubmit={this.handleSearchClick.bind(this)}>
                         <TextField
                             id="manga-name"
+                            floatingLabelText='Manga title'
                             disabled={isLoading}
                             defaultValue={lastTitle}
                             onChange={(event, newValue) => this.input = newValue}/>

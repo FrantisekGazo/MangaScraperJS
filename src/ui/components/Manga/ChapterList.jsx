@@ -9,12 +9,13 @@ const ChapterListItem = require('./ChapterListItem.jsx');
 class ChapterList extends React.Component {
 
     renderRow({ index, key, style }) {
-        const {chapters, onChapterClick} = this.props;
+        const {chapters, onChapterClick, shownChapterId} = this.props;
         const chapter = chapters[index];
         return (
             <ChapterListItem
                 key={key}
                 chapter={chapter}
+                isShown={shownChapterId === chapter.id}
                 onClick={() => onChapterClick(chapter.id)}
                 style={style}/>
         );
@@ -39,6 +40,7 @@ class ChapterList extends React.Component {
 
 ChapterList.propTypes = {
     chapters: React.PropTypes.array.isRequired,
+    shownChapterId: React.PropTypes.string.isRequired,
     onChapterClick: React.PropTypes.func.isRequired,
 };
 

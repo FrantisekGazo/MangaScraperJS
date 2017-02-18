@@ -8,9 +8,12 @@ const DownloadStatusCode = require('../../../model/DownloadState');
 class ChapterListItem extends React.Component {
 
     render() {
-        const {style, chapter, onClick} = this.props;
+        const {style, chapter, isShown, onClick} = this.props;
 
-        let itemStyle = {color: '#000'};
+        let itemStyle = {
+            color: '#000',
+            backgroundColor: isShown ? '#dcdcdc' : '#fff'
+        };
         switch (chapter.status.code) {
             case DownloadStatusCode.IN_QUEUE:
                 itemStyle.color = '#006a8e';
@@ -41,6 +44,7 @@ class ChapterListItem extends React.Component {
 
 ChapterListItem.propTypes = {
     chapter: React.PropTypes.object.isRequired,
+    isShown: React.PropTypes.bool.isRequired,
     style: React.PropTypes.object.isRequired,
     onClick: React.PropTypes.func.isRequired,
 };
