@@ -1,6 +1,6 @@
 "use strict";
 
-const DownloadStatus = require('../model/DownloadState');
+const DownloadStatusCode = require('../model/DownloadStatusCode');
 
 const Xray = require('x-ray');
 const x = Xray({
@@ -115,7 +115,7 @@ function scrapeMangaInfo(mangaId) {
                     const c = Object.assign(chapter, {
                         id: `${mangaId}-${id}`,
                         status: {
-                            code: DownloadStatus.NONE,
+                            code: DownloadStatusCode.NONE,
                             msg: ''
                         }
                     });

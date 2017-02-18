@@ -3,7 +3,7 @@
 const React = require('react');
 const { ListItem } = require('material-ui/List');
 
-const DownloadStatusCode = require('../../../model/DownloadState');
+const DownloadStatusCode = require('../../../model/DownloadStatusCode');
 
 class ChapterListItem extends React.Component {
 

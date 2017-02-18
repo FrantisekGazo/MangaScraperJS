@@ -2,7 +2,7 @@
 
 const update = require('immutability-helper');
 
-const DownloadStatusCode = require('../model/DownloadState');
+const DownloadStatusCode = require('../model/DownloadStatusCode');
 
 const { ACTIONS } = require('../action/MangaAction');
 
