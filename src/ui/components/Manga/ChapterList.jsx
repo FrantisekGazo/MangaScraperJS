@@ -26,11 +26,11 @@ class ChapterList extends React.Component {
             <AutoSizer>
                 {({ height, width }) => (
                     <List
-                    height={height}
-                    rowCount={chapters.length}
-                    rowHeight={70}
-                    rowRenderer={this.renderRow.bind(this)}
-                    width={width}/>
+                        height={height}
+                        rowCount={chapters.length}
+                        rowHeight={70}
+                        rowRenderer={this.renderRow.bind(this)}
+                        width={width}/>
                 )}
             </AutoSizer>
         );

@@ -2,6 +2,8 @@
 
 const update = require('immutability-helper');
 
+const DownloadStatusCode = require('../model/DownloadState');
+
 const { ACTIONS } = require('../action/MangaAction');
 
 
@@ -51,8 +53,13 @@ function showChapter(state, action) {
 
 function enqueueChapterDonload(state, action) {
     const chapterId = action.payload;
-    return Object.assign({}, state, {
-        downloadChapterIds: state.downloadChapterIds.concat([chapterId])
+    return update(state, {
+        downloadChapterIds: {$set: state.downloadChapterIds.concat([chapterId])},
+        chapters: {
+            [chapterId]: {
+                status: {$set: {code: DownloadStatusCode.IN_QUEUE, msg: 'Waiting...'}}
+            }
+        }
     });
 }
 
@@ -77,6 +84,6 @@ function chapterDonloadStatus(state, action) {
 function chapterDonloadEnd(state, action) {
     return Object.assign({}, state, {
         isDownloading: false,
-        downloadChapterIds: state.downloadChapterIds.slice(1, state.downloadChapterIds.length)
+        downloadChapterIds: state.downloadChapterIds.slice(1, state.downloadChapterIds.length),
     });
 }

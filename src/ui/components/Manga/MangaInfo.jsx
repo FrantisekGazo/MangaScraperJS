@@ -11,19 +11,23 @@ class MangaInfo extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            text: '',
             chapters: props.chapters
         };
     }
 
-    handleFilter(event, newValue) {
-        const allChapters = this.props.chapters;
+    componentWillUpdate() {
+        this.state.chapters = this.filterChapters(this.props.chapters, this.state.text);
+    }
+
+    filterChapters(allChapters, text) {
         let chapters = [];
 
-        if (newValue) {
+        if (text) {
             let chapter;
             for (let i = 0; i < allChapters.length; i++) {
                 chapter = allChapters[i];
-                if (chapter.title.indexOf(newValue) >= 0) {
+                if (chapter.title.indexOf(text) >= 0) {
                     chapters.push(chapter);
                 }
             }
@@ -31,8 +35,13 @@ class MangaInfo extends React.Component {
             chapters = allChapters;
         }
 
+        return chapters;
+    }
+
+    handleFilter(event, newValue) {
         this.setState({
-            chapters: chapters
+            text: newValue,
+            chapters: this.filterChapters(this.props.chapters, newValue)
         });
     }
 

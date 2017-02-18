@@ -3,20 +3,37 @@
 const React = require('react');
 const { ListItem } = require('material-ui/List');
 
+const DownloadStatusCode = require('../../../model/DownloadState');
 
 class ChapterListItem extends React.Component {
 
     render() {
         const {style, chapter, onClick} = this.props;
 
+        let itemStyle = {color: '#000'};
+        switch (chapter.status.code) {
+            case DownloadStatusCode.IN_QUEUE:
+                itemStyle.color = '#006a8e';
+                break;
+            case DownloadStatusCode.IN_PROGRESS:
+                itemStyle.color = '#ffa72d';
+                break;
+            case DownloadStatusCode.DONE:
+                itemStyle.color = '#5abb00';
+                break;
+            case DownloadStatusCode.FAILED:
+                itemStyle.color = '#c13904';
+                break;
+        }
+
         return (
             <div
                 style={style}
                 onClick={onClick}>
                 <ListItem
+                    style={itemStyle}
                     primaryText={chapter.title}
-                    secondaryText={`(${chapter.date})`}
-                />
+                    secondaryText={`(${chapter.date})`}/>
             </div>
         );
     }
