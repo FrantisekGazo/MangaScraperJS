@@ -19,6 +19,10 @@ function deleteDirectoryRecursive(dirPath) {
     }
 }
 
+function exists(filePath) {
+    return fs.existsSync(filePath);
+}
+
 function openFile(filePath) {
     shell.openItem(filePath);
 }
@@ -47,6 +51,14 @@ function showSaveDirDialog() {
     });
 }
 
+function getMangaChapterFile(mangaTitle, chapterTitle) {
+    return path.join(getMangaDirectory(mangaTitle), getMangaChapterFileName(chapterTitle));
+}
+
+function getMangaChapterFileName(chapterTitle) {
+    return chapterTitle + '.pdf';
+}
+
 function getMangaDirectory(title) {
     const appPath = path.join(app.getPath('downloads'), 'MangaSraper');
     if (!fs.existsSync(appPath)) {
@@ -62,6 +74,9 @@ function getMangaDirectory(title) {
 
 module.exports = {
     deleteDirectoryRecursive,
+    exists,
+    getMangaChapterFile,
+    getMangaChapterFileName,
     getMangaDirectory,
     openFile,
     showDirectory,

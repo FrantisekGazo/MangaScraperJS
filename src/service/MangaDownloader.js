@@ -30,7 +30,7 @@ function downloadMangaChapter(chapter, outDirPath, progressCallback) {
         })
         .then((imageFilePaths) => {
             //console.log('All downloaded', imageFilePaths);
-            const filePath = path.join(outDirPath, `${chapter.title}.pdf`);
+            const filePath = path.join(outDirPath, FileService.getMangaChapterFileName(chapter.title));
             progressCallback(chapter.id, {msg: `Creating PDF...`, code: DownloadStatusCode.IN_PROGRESS});
             return PDFService.imagesToPdf(imageFilePaths, filePath);
         })
