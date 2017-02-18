@@ -62,7 +62,7 @@ function scrapeChapterPageImageUrl(pageUrl) {
 function scrapeChapterPages(startUrl, progress) {
     return scrapeChapterPageUrls(startUrl)
         .then(pageUrls => {
-            console.log('page urls:', pageUrls);
+            // console.log('page urls:', pageUrls);
             let imageUrls = [];
 
             const scrapers = pageUrls.map((pageUrl) => () => {
@@ -75,7 +75,17 @@ function scrapeChapterPages(startUrl, progress) {
             return scrapers.reduce((p, fn) => p.then(fn), Promise.resolve())
                     .then(() => {
                         if (pageUrls.length === imageUrls.length) {
-                            return imageUrls;
+                            // console.log('image urls:', imageUrls);
+                            const cleanImageUrls = imageUrls.filter(url => {
+                                if (url === null || url === undefined) return false;
+                                if (url.indexOf('.jpg') === -1) return false;
+                                if (url.indexOf('_credits.jpg') >= 0) return false;
+                                if (url.indexOf('_note.jpg') >= 0) return false;
+                                if (url.indexOf('_recruit.jpg') >= 0) return false;
+                                return true;
+                            });
+                            console.log('cleaned image urls:', cleanImageUrls);
+                            return cleanImageUrls;
                         } else {
                             throw new Error(`Missing ${pageUrls.length === imageUrls.length} pages. Please try again.`);
                         }

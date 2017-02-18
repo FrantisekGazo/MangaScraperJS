@@ -5,7 +5,7 @@ const sizeOf = require('image-size');
 const PDFDocument = require('pdfkit');
 
 
-const imgToPdf = (imageFilePaths, filePath) => {
+function imagesToPdf(imageFilePaths, filePath) {
     return new Promise(function (resolve, reject) {
         const doc = new PDFDocument();
 
@@ -33,9 +33,9 @@ const imgToPdf = (imageFilePaths, filePath) => {
         doc.end();
         resolve(filePath);
     });
-};
+}
 
-const fittedSizeOf = (imagePath, pageSize) => {
+function fittedSizeOf(imagePath, pageSize) {
     const dimensions = sizeOf(imagePath);
 
     let out = {width: dimensions.width, height: dimensions.height};
@@ -53,8 +53,8 @@ const fittedSizeOf = (imagePath, pageSize) => {
     }
 
     return out;
-};
+}
 
 module.exports = {
-    imgToPdf
+    imagesToPdf
 };

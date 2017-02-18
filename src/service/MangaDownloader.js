@@ -7,23 +7,10 @@ const DownloadStatusCode = require('../model/DownloadStatusCode');
 const ScraperService = require('./ScraperService');
 const ImageService = require('./ImageService');
 const PDFService = require('./PDFService');
+const FileService = require('./FileService');
 
 
-const deleteFolderRecursive = (dirPath) => {
-    if (fs.existsSync(dirPath)) {
-        fs.readdirSync(dirPath).forEach((file, index) => {
-            const curPath = path.join(dirPath, file);
-            if (fs.lstatSync(curPath).isDirectory()) { // recurse
-                deleteFolderRecursive(curPath);
-            } else { // delete file
-                fs.unlinkSync(curPath);
-            }
-        });
-        fs.rmdirSync(dirPath);
-    }
-};
-
-const downloadMangaChapter = (chapter, outDirPath, progressCallback) => {
+function downloadMangaChapter(chapter, outDirPath, progressCallback) {
     const tempDirPath = path.join(outDirPath, `.${chapter.title}`);
 
     progressCallback(chapter.id, {msg: 'Loading images...', code: DownloadStatusCode.IN_PROGRESS});
@@ -45,11 +32,11 @@ const downloadMangaChapter = (chapter, outDirPath, progressCallback) => {
             //console.log('All downloaded', imageFilePaths);
             const filePath = path.join(outDirPath, `${chapter.title}.pdf`);
             progressCallback(chapter.id, {msg: `Creating PDF...`, code: DownloadStatusCode.IN_PROGRESS});
-            return PDFService.imgToPdf(imageFilePaths, filePath);
+            return PDFService.imagesToPdf(imageFilePaths, filePath);
         })
         .then((filePath) => {
             if (fs.existsSync(tempDirPath)) {
-                deleteFolderRecursive(tempDirPath);
+                FileService.deleteDirectoryRecursive(tempDirPath);
                 //console.log('Removed', tempDirPath);
             }
 
@@ -60,13 +47,13 @@ const downloadMangaChapter = (chapter, outDirPath, progressCallback) => {
         .catch((err) => {
             progressCallback(chapter.id, {msg: err.message, code: DownloadStatusCode.FAILED});
         });
-};
+}
 
-const downloadMangaChapters = (chapters, outDirPath, progressCallback) => {
+function downloadMangaChapters(chapters, outDirPath, progressCallback) {
     // download chapters sequentially
     const downloads = chapters.map((chapter) => () => downloadMangaChapter(chapter, outDirPath, progressCallback));
     return downloads.reduce((p, fn) => p.then(fn), Promise.resolve());
-};
+}
 
 module.exports = {
     downloadMangaChapter,

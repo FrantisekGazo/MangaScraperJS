@@ -5,6 +5,20 @@ const path = require('path');
 const fs = require('fs');
 
 
+function deleteDirectoryRecursive(dirPath) {
+    if (fs.existsSync(dirPath)) {
+        fs.readdirSync(dirPath).forEach((file, index) => {
+            const curPath = path.join(dirPath, file);
+            if (fs.lstatSync(curPath).isDirectory()) { // recurse
+                deleteDirectoryRecursive(curPath);
+            } else { // delete file
+                fs.unlinkSync(curPath);
+            }
+        });
+        fs.rmdirSync(dirPath);
+    }
+}
+
 function openFile(filePath) {
     shell.openItem(filePath);
 }
@@ -47,6 +61,7 @@ function getMangaDirectory(title) {
 
 
 module.exports = {
+    deleteDirectoryRecursive,
     getMangaDirectory,
     openFile,
     showDirectory,
