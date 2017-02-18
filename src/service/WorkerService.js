@@ -1,6 +1,21 @@
 const {BrowserWindow} = require('electron').remote;
 const {ipcRenderer} = require('electron');
 
+const WINDOW_IDS = {
+    MAIN: 0,
+    WORKER: 0,
+};
+
+function listenForWindowIds() {
+    ipcRenderer.on('set-main-window-id', function (event, input, output, err) {
+        WINDOW_IDS.MAIN = input;
+        console.log('set-main-window-id', event, input, output, err);
+    });
+    ipcRenderer.on('set-worker-window-id', function (event, input, output, err) {
+        WINDOW_IDS.WORKER = input;
+        console.log('set-worker-window-id', event, input, output, err);
+    });
+}
 
 const WorkerTasks = {
     LOAD_MANGA: 'load-manga',
@@ -17,8 +32,8 @@ function workerTaskProgress(name) {
 
 function execByWorker(key, arg, progressCallback=null) {
     return new Promise(function (resolve, reject) {
-        const window = BrowserWindow.getFocusedWindow();
-        const workerWindow = window.getChildWindows()[0];
+        const mainWindow = BrowserWindow.fromId(WINDOW_IDS.MAIN);
+        const workerWindow = BrowserWindow.fromId(WINDOW_IDS.WORKER);
 
         ipcRenderer.on(workerTaskEnded(key), function (event, input, output, err) {
             if (err) {
@@ -36,11 +51,12 @@ function execByWorker(key, arg, progressCallback=null) {
             });
         }
 
-        workerWindow.webContents.send(key, arg, window.id);
+        workerWindow.webContents.send(key, arg, mainWindow.id);
     });
 }
 
 module.exports = {
+    listenForWindowIds,
     WorkerTasks,
     workerTaskProgress,
     workerTaskEnded,
