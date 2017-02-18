@@ -1,12 +1,9 @@
 "use strict";
 
-const { app } = require('electron').remote;
-const path = require('path');
-const fs = require('fs');
-
 const { createAction } = require('./index');
 const { createGoBackAction } = require('./RouterAction');
 const { WorkerTasks, execByWorker } = require('../service/WorkerService');
+const FileService = require('../service/FileService');
 const MangaSelector = require('../selector/MangaSelector');
 
 
@@ -100,7 +97,7 @@ function downloadNextChapter(dispatch, getState) {
     }
 
     const mangaTitle = MangaSelector.getManga(state).title;
-    const managaDirPath = getMangaDirectory(mangaTitle);
+    const managaDirPath = FileService.getMangaDirectory(mangaTitle);
     return execByWorker(WorkerTasks.DOWNLOAD_MANGA_CHAPTER, {chapter, path: managaDirPath}, downloadChapterProgress)
         .then(() => {
             dispatch(createEndChapterDownloadAction());
@@ -111,18 +108,6 @@ function downloadNextChapter(dispatch, getState) {
             console.log('Download failed:', err);
             return downloadNextChapter(dispatch, getState);
         });
-}
-
-function getMangaDirectory(title) {
-    const appPath = path.join(app.getPath('downloads'), 'MangaSraper');
-    if (!fs.existsSync(appPath)) {
-        fs.mkdirSync(appPath);
-    }
-    const managaDirPath = path.join(appPath, title);
-    if (!fs.existsSync(managaDirPath)) {
-        fs.mkdirSync(managaDirPath);
-    }
-    return managaDirPath;
 }
 
 

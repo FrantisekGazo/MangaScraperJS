@@ -4,7 +4,9 @@ const React = require('react');
 const AppBar = require('material-ui/AppBar').default;
 const IconBack = require('material-ui/svg-icons/navigation/arrow-back').default;
 const IconButton = require('material-ui/IconButton').default;
+const IconOpenFolder = require('material-ui/svg-icons/file/folder-open').default;
 
+const FileService = require('../../../service/FileService');
 const ChapterDetail = require('./ChapterDetail.jsx');
 const DownloadInfo = require('./DownloadInfo.jsx');
 const MangaInfo = require('./MangaInfo.jsx');
@@ -39,6 +41,11 @@ const style = {
 
 class MangaScreen extends React.Component {
 
+    handleOpenClick() {
+        const path = FileService.getMangaDirectory(this.props.manga.title);
+        FileService.showDirectory(path);
+    }
+
     render() {
         const { manga, chapters, downloadingChapters, shownChapter, onBackClick, onChapterClick, onDownloadClick } = this.props;
 
@@ -47,7 +54,8 @@ class MangaScreen extends React.Component {
                 <AppBar
                     style={style.appBar}
                     title={manga.title}
-                    iconElementLeft={(<IconButton onTouchTap={onBackClick}><IconBack/></IconButton>)}/>
+                    iconElementLeft={(<IconButton onTouchTap={onBackClick}><IconBack/></IconButton>)}
+                    iconElementRight={(<IconButton onTouchTap={this.handleOpenClick.bind(this)}><IconOpenFolder/></IconButton>)}/>
 
                 <div style={style.content}>
                     <DownloadInfo

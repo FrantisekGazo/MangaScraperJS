@@ -54,7 +54,7 @@ const downloadMangaChapter = (chapter, outDirPath, progressCallback) => {
             }
 
             //console.log('Done', filePath);
-            progressCallback(chapter.id, {msg: `Done (${filePath})`, code: DownloadStatusCode.DONE});
+            progressCallback(chapter.id, {msg: filePath, code: DownloadStatusCode.DONE});
             return Promise.resolve();
         })
         .catch((err) => {
