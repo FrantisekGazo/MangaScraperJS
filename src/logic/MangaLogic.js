@@ -9,10 +9,22 @@ const FileService = require('../service/FileService');
 const MangaSelector = require('../selector/MangaSelector');
 
 
-
-const downloadChapter = createLogic({
+const validateEnqueuedChapter = createLogic({
     type: MangaAction.ACTIONS.ENQUEUE_CHAPTER_DOWNLOAD,
-    latest: true,
+    validate({ getState, action }, allow, reject) {
+        const chapterId = action.payload;
+        const enqueuedIds = MangaSelector.getDownloadChapterIds(getState());
+
+        if (enqueuedIds.indexOf(chapterId) === -1) {
+            allow(action);
+        } else {
+            reject();
+        }
+    }
+});
+
+const startDownload = createLogic({
+    type: MangaAction.ACTIONS.ENQUEUE_CHAPTER_DOWNLOAD,
     process({ getState, action }, dispatch, done) {
         downloadNextChapter(dispatch, getState)
             .then(() => done());
@@ -61,5 +73,6 @@ function downloadNextChapter(dispatch, getState) {
 
 
 module.exports = [
-    downloadChapter
+    validateEnqueuedChapter,
+    startDownload
 ];
