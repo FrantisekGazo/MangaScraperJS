@@ -1,11 +1,6 @@
 "use strict";
 
 const { createAction } = require('./index');
-const { createSetMangaAction } = require('./MangaAction');
-const { createGoToMangaScreenAction, createGoBackAction } = require('./RouterAction');
-const { WorkerTasks, execByWorker } = require('../service/WorkerService');
-const FileService = require('../service/FileService');
-const DownloadStatusCode = require('../model/DownloadStatusCode');
 
 
 const ACTIONS = {
@@ -28,53 +23,9 @@ const createSearchErrorAction = (errorMessage) => {
 };
 
 
-
-const mangaTitleToId = (title) => {
-    return title.toLowerCase().trim().replace(' ', '_').replace(/[^a-zA-Z0-9_]/, '');
-};
-
-const loadManga = (mangaId) => {
-    return execByWorker(WorkerTasks.LOAD_MANGA, mangaId);
-};
-
-function execSearch(mangaTitle) {
-    return function (dispatch, getState) {
-        const mangaId = mangaTitleToId(mangaTitle);
-
-        dispatch(createSearchStartAction(mangaTitle));
-
-        return loadManga(mangaId)
-            .then((manga) => {
-                const chapters = manga.chapters;
-                let chapter, filePath;
-                for (let chapterId in chapters) {
-                    if (!chapters.hasOwnProperty(chapterId)) continue;
-
-                    chapter = chapters[chapterId];
-                    filePath = FileService.getMangaChapterFile(manga.title, chapter.title);
-                    if (FileService.exists(filePath)) {
-                        chapter.status = {
-                            code: DownloadStatusCode.DONE,
-                            msg: filePath
-                        };
-                    }
-                }
-
-                return manga;
-            })
-            .then((manga) => {
-                dispatch(createSearchEndAction());
-                dispatch(createSetMangaAction(manga));
-                dispatch(createGoToMangaScreenAction(mangaId));
-            })
-            .catch((err) => {
-                dispatch(createSearchErrorAction(err.message));
-            });
-    }
-}
-
-
 module.exports = {
     ACTIONS,
-    execSearch,
+    createSearchStartAction,
+    createSearchEndAction,
+    createSearchErrorAction,
 };

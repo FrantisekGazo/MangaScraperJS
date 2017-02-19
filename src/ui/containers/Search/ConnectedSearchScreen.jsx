@@ -21,7 +21,7 @@ module.exports = connect(
     (dispatch) => {
         return {
             onSearchClick: (title) => {
-                dispatch(SearchAction.execSearch(title));
+                dispatch(SearchAction.createSearchStartAction(title));
             }
         };
     }

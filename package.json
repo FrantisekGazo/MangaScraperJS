@@ -71,7 +71,9 @@
     "react-tap-event-plugin": "^2.0.1",
     "react-virtualized": "^9.0.0",
     "redux": "^3.6.0",
+    "redux-logic": "^0.11.6",
     "redux-thunk": "^2.1.0",
+    "rxjs": "^5.1.1",
     "x-ray": "^2.3.1"
   }
 }
