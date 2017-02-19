@@ -1,8 +1,7 @@
 "use strict";
 
 const { createStore, applyMiddleware, compose } = require('redux');
-const thunkMiddleware = require('redux-thunk').default;
-const { createLogicMiddleware } = require('redux-logic'); // TODO: remove redux-thunk and use only redux-logic
+const { createLogicMiddleware } = require('redux-logic');
 const logic = require('../logic');
 const { routerMiddleware } = require('react-router-redux');
 const { hashHistory } = require('react-router');
@@ -20,7 +19,6 @@ if (process.env.NODE_ENV === 'development') {
 
     enhancer = composeEnhancers(
         applyMiddleware(
-            thunkMiddleware,
             createLogicMiddleware(logic),
             routerMiddleware(hashHistory)
         )
@@ -28,7 +26,6 @@ if (process.env.NODE_ENV === 'development') {
 } else { // production
     enhancer = compose(
         applyMiddleware(
-            thunkMiddleware,
             createLogicMiddleware(logic),
             routerMiddleware(hashHistory)
         )

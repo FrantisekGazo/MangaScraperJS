@@ -29,7 +29,7 @@ class ChapterDetail extends React.Component {
         return (
             <div>
                 {chapter.title}
-                <IconButton onTouchTap={onDownloadClick}><IconDownload/></IconButton>
+                <IconButton onTouchTap={() => onDownloadClick(chapter.id)}><IconDownload/></IconButton>
                 <br/>
                 {statusNode}
             </div>

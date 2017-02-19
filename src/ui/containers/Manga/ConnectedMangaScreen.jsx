@@ -5,6 +5,7 @@ const { connect } = require('react-redux');
 
 const MangaScreen = require('../../components/Manga/MangaScreen.jsx');
 const MangaAction = require('../../../action/MangaAction');
+const RouterAction = require('../../../action/RouterAction');
 const MangaSelector = require('../../../selector/MangaSelector');
 
 
@@ -22,13 +23,13 @@ module.exports = connect(
     (dispatch) => {
         return {
             onBackClick: () => {
-                dispatch(MangaAction.goBack());
+                dispatch(RouterAction.createGoBackAction());
             },
             onChapterClick: (chapterId) => {
-                dispatch(MangaAction.showChapter(chapterId));
+                dispatch(MangaAction.createShowChapterAction(chapterId));
             },
-            onDownloadClick: () => {
-                dispatch(MangaAction.downloadShownChapter());
+            onDownloadClick: (chapterId) => {
+                dispatch(MangaAction.createEnqueueChapterDownloadAction(chapterId));
             },
         };
     }
