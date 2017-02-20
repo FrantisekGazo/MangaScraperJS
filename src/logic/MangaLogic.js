@@ -8,10 +8,20 @@ const MangaAction = require('../action/MangaAction');
 const MangaSelector = require('../selector/MangaSelector');
 const RouterAction = require('../action/RouterAction');
 const ScraperService = require('../service/ScraperService');
+const MangaDownloader = require('../service/MangaDownloader');
 
+
+const closeManga = createLogic({
+    type: MangaAction.ACTIONS.CLOSE_MANGA,
+    process({ getState, action }, dispatch, done) {
+        dispatch(RouterAction.createGoBackAction());
+        done();
+    }
+});
 
 const loadManga = createLogic({
     type: MangaAction.ACTIONS.LOAD_MANGA,
+    cancelType: MangaAction.ACTIONS.CLOSE_MANGA,
     latest: true,
     process({ getState, action }, dispatch, done) {
         const mangaId = action.payload;
@@ -66,6 +76,7 @@ const validateEnqueuedChapter = createLogic({
 
 const startDownload = createLogic({
     type: MangaAction.ACTIONS.ENQUEUE_CHAPTER_DOWNLOAD,
+    cancelType: MangaAction.ACTIONS.CLOSE_MANGA,
     process({ getState, action }, dispatch, done) {
         downloadNextChapter(dispatch, getState)
             .then(() => done());
@@ -89,18 +100,15 @@ function downloadNextChapter(dispatch, getState) {
 
     dispatch(MangaAction.createStartChapterDownloadAction());
 
-    function downloadChapterProgress({chapterId, status}) {
+    function downloadChapterProgress(chapterId, status) {
         dispatch(MangaAction.createChapterDownloadStatusAction(chapterId, status));
     }
 
     const mangaTitle = MangaSelector.getManga(state).title;
     const managaDirPath = FileService.getMangaDirectory(mangaTitle);
-    const arg = {
-        chapter,
-        dirPath: managaDirPath,
-        fileName: FileService.getMangaChapterFileName(mangaTitle, chapter.title)
-    };
-    return execByWorker(WorkerTasks.DOWNLOAD_MANGA_CHAPTER, arg, downloadChapterProgress)
+    const fileName =  FileService.getMangaChapterFileName(mangaTitle, chapter.title);
+
+    return MangaDownloader.downloadMangaChapter(chapter, managaDirPath, fileName, downloadChapterProgress)
         .then(() => {
             dispatch(MangaAction.createEndChapterDownloadAction());
             return downloadNextChapter(dispatch, getState);
@@ -114,7 +122,8 @@ function downloadNextChapter(dispatch, getState) {
 
 
 module.exports = [
+    closeManga,
     loadManga,
+    startDownload,
     validateEnqueuedChapter,
-    startDownload
 ];

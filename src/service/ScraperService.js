@@ -169,7 +169,6 @@ function scrapeSearch(title) {
                 url: '.title@href'
             }])
         })(function (err, result) {
-            console.log('result', result);
             if (err) {
                 reject(err);
             } else if (result.header.length === 0) {

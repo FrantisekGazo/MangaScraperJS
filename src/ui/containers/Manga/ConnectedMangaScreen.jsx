@@ -23,7 +23,7 @@ module.exports = connect(
     (dispatch) => {
         return {
             onBackClick: () => {
-                dispatch(RouterAction.createGoBackAction());
+                dispatch(MangaAction.createCloseMangaAction());
             },
             onChapterClick: (chapterId) => {
                 dispatch(MangaAction.createShowChapterAction(chapterId));
