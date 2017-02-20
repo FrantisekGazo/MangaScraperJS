@@ -7,6 +7,9 @@ const IconButton = require('material-ui/IconButton').default;
 const IconSearch = require('material-ui/svg-icons/action/search').default;
 const TextField = require('material-ui/TextField').default;
 
+const ResultList = require('./ResultList.jsx');
+
+
 const style = {
     appBar: {
         position: 'fixed',
@@ -14,12 +17,18 @@ const style = {
         right: 0,
         top: 0,
     },
-    content: {
+    input: {
         position: 'absolute',
         top: '100px',
         // center it:
         left: '50%',
         transform: 'translate(-50%)',
+    },
+    results: {
+        position: 'absolute',
+        top: '200px',
+        left: '50%',
+        transform: 'translate(-50%)'
     },
     progress: {
         position: 'relative',
@@ -46,7 +55,7 @@ class SearchScreen extends React.Component {
     }
 
     render() {
-        const { error, isLoading, lastTitle } = this.props;
+        const { error, isLoading, lastTitle, results } = this.props;
 
         const progressNode = (isLoading) ? (<CircularProgress style={style.progress}/>) : null;
         const errorNode = (error) ? (
@@ -62,7 +71,7 @@ class SearchScreen extends React.Component {
                     title='Manga'
                     iconElementLeft={(<div/>)}/>
 
-                <div style={style.content}>
+                <div style={style.input}>
                     <form
                         onSubmit={this.handleSearchClick.bind(this)}>
                         <TextField
@@ -83,7 +92,10 @@ class SearchScreen extends React.Component {
                     {errorNode}
 
                     {progressNode}
+                </div>
 
+                <div style={style.results}>
+                    <ResultList results={results}/>
                 </div>
             </div>
         )
@@ -94,6 +106,7 @@ SearchScreen.propTypes = {
     error: React.PropTypes.string.isRequired,
     isLoading: React.PropTypes.bool.isRequired,
     lastTitle: React.PropTypes.string.isRequired,
+    results: React.PropTypes.array.isRequired,
     onSearchClick: React.PropTypes.func.isRequired,
 };
 

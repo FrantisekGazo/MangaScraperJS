@@ -15,6 +15,7 @@ module.exports = connect(
             error: SearchSelector.getError(state),
             isLoading: SearchSelector.isLoading(state),
             lastTitle: SearchSelector.getLastTitle(state),
+            results: SearchSelector.getResults(state),
         };
     },
     // dispatch functions to props

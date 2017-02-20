@@ -6,6 +6,7 @@ const { ACTIONS } = require('../action/SearchAction');
 const initState = {
     lastTitle: '',
     loading: false,
+    results: [],
     error: '',
 };
 
@@ -22,8 +23,10 @@ const search = (state = initState, action) => {
                 error: ''
             });
         case ACTIONS.SEARCH_END:
+            const results = action.payload;
             return Object.assign({}, state, {
                 loading: false,
+                results: results,
                 error: ''
             });
         case ACTIONS.SEARCH_ERROR:

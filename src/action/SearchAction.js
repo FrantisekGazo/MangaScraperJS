@@ -19,8 +19,8 @@ const createSearchStartAction = () => {
     return createAction(ACTIONS.SEARCH_START);
 };
 
-const createSearchEndAction = () => {
-    return createAction(ACTIONS.SEARCH_END);
+const createSearchEndAction = (results) => {
+    return createAction(ACTIONS.SEARCH_END, results);
 };
 
 const createSearchErrorAction = (errorMessage) => {
