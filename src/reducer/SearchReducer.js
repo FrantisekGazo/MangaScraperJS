@@ -11,9 +11,13 @@ const initState = {
 
 const search = (state = initState, action) => {
     switch (action.type) {
-        case ACTIONS.SEARCH_START:
+        case ACTIONS.SET_SEARCH_TEXT:
             return Object.assign({}, state, {
                 lastTitle: action.payload,
+                error: ''
+            });
+        case ACTIONS.SEARCH_START:
+            return Object.assign({}, state, {
                 loading: true,
                 error: ''
             });

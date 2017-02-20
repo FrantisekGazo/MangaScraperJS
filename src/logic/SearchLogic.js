@@ -15,12 +15,13 @@ const mangaTitleToId = (title) => {
 };
 
 const loadManga = createLogic({
-    type: SearchAction.ACTIONS.SEARCH_START,
+    type: SearchAction.ACTIONS.SET_SEARCH_TEXT,
     latest: true,
     process({ getState, action }, dispatch, done) {
         const mangaTitle = action.payload;
         const mangaId = mangaTitleToId(mangaTitle);
 
+        dispatch(SearchAction.createSearchStartAction());
         execByWorker(WorkerTasks.LOAD_MANGA, mangaId)
             .then((manga) => {
                 const chapters = manga.chapters;
