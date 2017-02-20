@@ -4,6 +4,7 @@ const React = require('react');
 const { connect } = require('react-redux');
 
 const SearchScreen = require('../../components/Search/SearchScreen.jsx');
+const MangaAction = require('../../../action/MangaAction');
 const SearchAction = require('../../../action/SearchAction');
 const SearchSelector = require('../../../selector/SearchSelector');
 
@@ -23,6 +24,9 @@ module.exports = connect(
         return {
             onSearchClick: (title) => {
                 dispatch(SearchAction.createSetSearchTextAction(title));
+            },
+            onResultClick: (mangaId) => {
+                dispatch(MangaAction.createLoadMangaAction(mangaId));
             }
         };
     }

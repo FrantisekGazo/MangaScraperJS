@@ -4,7 +4,9 @@ const { createAction } = require('./index');
 
 
 const ACTIONS = {
-    SET_MANGA: 'SET_MANGA',
+    LOAD_MANGA: 'LOAD_MANGA',
+    LOAD_MANGA_DONE: 'LOAD_MANGA_DONE',
+    LOAD_MANGA_FAILED: 'LOAD_MANGA_FAILED',
     SHOW_CHAPTER: 'SHOW_CHAPTER',
     ENQUEUE_CHAPTER_DOWNLOAD: 'ENQUEUE_CHAPTER_DOWNLOAD',
     DOWNLOAD_CHAPTER_START: 'DOWNLOAD_CHAPTER_START',
@@ -13,8 +15,16 @@ const ACTIONS = {
 };
 
 
-const createSetMangaAction = (manga) => {
-    return createAction(ACTIONS.SET_MANGA, manga);
+const createLoadMangaAction = (url) => {
+    return createAction(ACTIONS.LOAD_MANGA, url);
+};
+
+const createLoadMangaDoneAction = (manga) => {
+    return createAction(ACTIONS.LOAD_MANGA_DONE, manga);
+};
+
+const createLoadMangaFailedAction = (errorMessage) => {
+    return createAction(ACTIONS.LOAD_MANGA_FAILED, errorMessage);
 };
 
 const createEnqueueChapterDownloadAction = (chapterId) => {
@@ -43,7 +53,9 @@ module.exports = {
     createChapterDownloadStatusAction,
     createEndChapterDownloadAction,
     createEnqueueChapterDownloadAction,
-    createSetMangaAction,
+    createLoadMangaAction,
+    createLoadMangaDoneAction,
+    createLoadMangaFailedAction,
     createShowChapterAction,
     createStartChapterDownloadAction,
 };

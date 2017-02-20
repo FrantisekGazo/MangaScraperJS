@@ -2,12 +2,53 @@
 
 const { createLogic } = require('redux-logic');
 
-const MangaAction = require('../action/MangaAction');
-const RouterAction = require('../action/RouterAction');
-const { WorkerTasks, execByWorker } = require('../service/WorkerService');
+const DownloadStatusCode = require('../model/DownloadStatusCode');
 const FileService = require('../service/FileService');
+const MangaAction = require('../action/MangaAction');
 const MangaSelector = require('../selector/MangaSelector');
+const RouterAction = require('../action/RouterAction');
+const ScraperService = require('../service/ScraperService');
 
+
+const loadManga = createLogic({
+    type: MangaAction.ACTIONS.LOAD_MANGA,
+    latest: true,
+    process({ getState, action }, dispatch, done) {
+        const mangaId = action.payload;
+
+        // change screen
+        dispatch(RouterAction.createGoToMangaScreenAction(mangaId));
+
+        ScraperService.scrapeMangaInfo(mangaId)
+            .then((manga) => {
+                manga.id = mangaId;
+
+                const chapters = manga.chapters;
+                let chapter, filePath;
+                for (let chapterId in chapters) {
+                    if (!chapters.hasOwnProperty(chapterId)) continue;
+
+                    chapter = chapters[chapterId];
+                    filePath = FileService.getMangaChapterFile(manga.title, chapter.title);
+                    if (FileService.exists(filePath)) {
+                        chapter.status = {
+                            code: DownloadStatusCode.DONE,
+                            msg: filePath
+                        };
+                    }
+                }
+
+                return manga;
+            })
+            .then((manga) => {
+                dispatch(MangaAction.createLoadMangaDoneAction(manga));
+            })
+            .catch((err) => {
+                dispatch(MangaAction.createLoadMangaFailedAction(err.message));
+            })
+            .then(() => done());
+    }
+});
 
 const validateEnqueuedChapter = createLogic({
     type: MangaAction.ACTIONS.ENQUEUE_CHAPTER_DOWNLOAD,
@@ -73,6 +114,7 @@ function downloadNextChapter(dispatch, getState) {
 
 
 module.exports = [
+    loadManga,
     validateEnqueuedChapter,
     startDownload
 ];

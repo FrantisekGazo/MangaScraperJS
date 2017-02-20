@@ -2,6 +2,7 @@
 
 const React = require('react');
 const AppBar = require('material-ui/AppBar').default;
+const CircularProgress = require('material-ui/CircularProgress').default;
 const IconBack = require('material-ui/svg-icons/navigation/arrow-back').default;
 const IconButton = require('material-ui/IconButton').default;
 const IconOpenFolder = require('material-ui/svg-icons/file/folder-open').default;
@@ -36,6 +37,12 @@ const style = {
         display: 'inline-block',
         float: 'left',
         padding: '10px',
+    },
+    center: {
+        position: 'relative',
+        width: '100px',
+        left: '50%',
+        transform: 'translate(-50%)',
     }
 };
 
@@ -49,19 +56,25 @@ class MangaScreen extends React.Component {
     render() {
         const { manga, chapters, downloadingChapters, shownChapter, onBackClick, onChapterClick, onDownloadClick } = this.props;
 
-        return (
-            <div style={style.base}>
-                <AppBar
-                    style={style.appBar}
-                    title={manga.title}
-                    iconElementLeft={
-                        <IconButton onTouchTap={onBackClick}><IconBack/></IconButton>
-                    }
-                    iconElementRight={
-                        <IconButton onTouchTap={this.handleOpenClick.bind(this)}><IconOpenFolder/></IconButton>
-                    }/>
+        let title = null;
+        let content = null;
 
-                <div style={style.content}>
+        if (manga.loading) {
+            content = (
+                <div style={style.center}>
+                    <CircularProgress/>
+                </div>
+            );
+        } else if (manga.error) {
+            content = (
+                <div style={style.center}>
+                    Error: {manga.error}
+                </div>
+            );
+        } else if (manga.loaded) {
+            title = manga.title;
+            content = (
+                <div>
                     <DownloadInfo
                         isDownloading={manga.isDownloading}
                         chapters={downloadingChapters}/>
@@ -84,6 +97,24 @@ class MangaScreen extends React.Component {
                         }
                     </div>
 
+                </div>
+            );
+        }
+
+        return (
+            <div style={style.base}>
+                <AppBar
+                    style={style.appBar}
+                    title={title}
+                    iconElementLeft={
+                        <IconButton onTouchTap={onBackClick}><IconBack/></IconButton>
+                    }
+                    iconElementRight={
+                        <IconButton onTouchTap={this.handleOpenClick.bind(this)}><IconOpenFolder/></IconButton>
+                    }/>
+
+                <div style={style.content}>
+                    { content }
                 </div>
             </div>
         );

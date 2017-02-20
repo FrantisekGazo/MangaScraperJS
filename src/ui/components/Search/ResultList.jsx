@@ -12,7 +12,7 @@ const styles = {
         justifyContent: 'space-around',
     },
     gridList: {
-        width: 600,
+        width: 620,
         overflowY: 'auto',
     },
     gridTile: {
@@ -23,15 +23,24 @@ const styles = {
 
 class ResultList extends React.Component {
 
+    handleResultClick(result) {
+        let mangaUrl = result.url;
+
+        if (mangaUrl.endsWith('/')) {
+            mangaUrl = mangaUrl.substr(0, mangaUrl.length - 1);
+        }
+        const index = mangaUrl.lastIndexOf('/');
+        if (index >= 0) {
+            const mangaId = mangaUrl.substr(index + 1);
+            this.props.onResultClick(mangaId);
+        }
+    }
+
     render() {
         const { results } = this.props;
 
         if (results.length === 0) {
-            return (
-                <div>
-                    0 results
-                </div>
-            );
+            return (<Subheader>0 Results</Subheader>);
         }
 
         return (
@@ -47,7 +56,8 @@ class ResultList extends React.Component {
                         <GridTile
                             style={styles.gridTile}
                             key={tile.url}
-                            title={tile.title}>
+                            title={tile.title}
+                            onTouchTap={() => this.handleResultClick(tile)}>
                             <img src={tile.imageUrl} />
                         </GridTile>
                     ))}
@@ -59,6 +69,7 @@ class ResultList extends React.Component {
 
 ResultList.propTypes = {
     results: React.PropTypes.array.isRequired,
+    onResultClick: React.PropTypes.func.isRequired,
 };
 
 

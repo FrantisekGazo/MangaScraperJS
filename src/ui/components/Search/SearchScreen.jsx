@@ -55,7 +55,7 @@ class SearchScreen extends React.Component {
     }
 
     render() {
-        const { error, isLoading, lastTitle, results } = this.props;
+        const { error, isLoading, lastTitle, results, onResultClick } = this.props;
 
         const progressNode = (isLoading) ? (<CircularProgress style={style.progress}/>) : null;
         const errorNode = (error) ? (
@@ -95,7 +95,7 @@ class SearchScreen extends React.Component {
                 </div>
 
                 <div style={style.results}>
-                    <ResultList results={results}/>
+                    <ResultList results={results} onResultClick={onResultClick}/>
                 </div>
             </div>
         )
@@ -108,6 +108,7 @@ SearchScreen.propTypes = {
     lastTitle: React.PropTypes.string.isRequired,
     results: React.PropTypes.array.isRequired,
     onSearchClick: React.PropTypes.func.isRequired,
+    onResultClick: React.PropTypes.func.isRequired,
 };
 
 
