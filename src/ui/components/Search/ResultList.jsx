@@ -1,6 +1,7 @@
 "use strict";
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const { GridList, GridTile } = require('material-ui/GridList');
 const Subheader = require('material-ui/Subheader').default;
 
@@ -68,8 +69,8 @@ class ResultList extends React.Component {
 }
 
 ResultList.propTypes = {
-    results: React.PropTypes.array.isRequired,
-    onResultClick: React.PropTypes.func.isRequired,
+    results: PropTypes.array.isRequired,
+    onResultClick: PropTypes.func.isRequired,
 };
 
 

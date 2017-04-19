@@ -1,6 +1,7 @@
 "use strict";
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const AppBar = require('material-ui/AppBar').default;
 const CircularProgress = require('material-ui/CircularProgress').default;
 const IconButton = require('material-ui/IconButton').default;
@@ -103,12 +104,12 @@ class SearchScreen extends React.Component {
 }
 
 SearchScreen.propTypes = {
-    error: React.PropTypes.string.isRequired,
-    isLoading: React.PropTypes.bool.isRequired,
-    lastTitle: React.PropTypes.string.isRequired,
-    results: React.PropTypes.array.isRequired,
-    onSearchClick: React.PropTypes.func.isRequired,
-    onResultClick: React.PropTypes.func.isRequired,
+    error: PropTypes.string.isRequired,
+    isLoading: PropTypes.bool.isRequired,
+    lastTitle: PropTypes.string.isRequired,
+    results: PropTypes.array.isRequired,
+    onSearchClick: PropTypes.func.isRequired,
+    onResultClick: PropTypes.func.isRequired,
 };
 
 

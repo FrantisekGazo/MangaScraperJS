@@ -1,6 +1,7 @@
 "use strict";
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const { ListItem } = require('material-ui/List');
 
 const DownloadStatusCode = require('../../../model/DownloadStatusCode');
@@ -42,10 +43,10 @@ class ChapterListItem extends React.Component {
 }
 
 ChapterListItem.propTypes = {
-    chapter: React.PropTypes.object.isRequired,
-    isShown: React.PropTypes.bool.isRequired,
-    style: React.PropTypes.object.isRequired,
-    onClick: React.PropTypes.func.isRequired,
+    chapter: PropTypes.object.isRequired,
+    isShown: PropTypes.bool.isRequired,
+    style: PropTypes.object.isRequired,
+    onClick: PropTypes.func.isRequired,
 };
 
 module.exports = ChapterListItem;

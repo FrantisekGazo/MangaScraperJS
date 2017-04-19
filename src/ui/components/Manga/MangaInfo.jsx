@@ -1,6 +1,7 @@
 "use strict";
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const TextField = require('material-ui/TextField').default;
 
 const ChapterList = require('./ChapterList.jsx');
@@ -68,10 +69,10 @@ class MangaInfo extends React.Component {
 }
 
 MangaInfo.propTypes = {
-    manga: React.PropTypes.object.isRequired,
-    chapters: React.PropTypes.array.isRequired,
-    shownChapterId: React.PropTypes.string.isRequired,
-    onChapterClick: React.PropTypes.func.isRequired,
+    manga: PropTypes.object.isRequired,
+    chapters: PropTypes.array.isRequired,
+    shownChapterId: PropTypes.string.isRequired,
+    onChapterClick: PropTypes.func.isRequired,
 };
 
 module.exports = MangaInfo;

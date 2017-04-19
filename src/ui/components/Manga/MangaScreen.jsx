@@ -1,6 +1,7 @@
 "use strict";
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const AppBar = require('material-ui/AppBar').default;
 const CircularProgress = require('material-ui/CircularProgress').default;
 const IconBack = require('material-ui/svg-icons/navigation/arrow-back').default;
@@ -122,13 +123,13 @@ class MangaScreen extends React.Component {
 }
 
 MangaScreen.propTypes = {
-    manga: React.PropTypes.object.isRequired,
-    chapters: React.PropTypes.array.isRequired,
-    downloadingChapters: React.PropTypes.array.isRequired,
-    shownChapter: React.PropTypes.object,
-    onBackClick: React.PropTypes.func.isRequired,
-    onChapterClick: React.PropTypes.func.isRequired,
-    onDownloadClick: React.PropTypes.func.isRequired,
+    manga: PropTypes.object.isRequired,
+    chapters: PropTypes.array.isRequired,
+    downloadingChapters: PropTypes.array.isRequired,
+    shownChapter: PropTypes.object,
+    onBackClick: PropTypes.func.isRequired,
+    onChapterClick: PropTypes.func.isRequired,
+    onDownloadClick: PropTypes.func.isRequired,
 };
 
 module.exports = MangaScreen;

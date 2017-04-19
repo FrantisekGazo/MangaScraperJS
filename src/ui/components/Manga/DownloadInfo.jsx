@@ -1,6 +1,7 @@
 "use strict";
 
 const React = require('react');
+const PropTypes = require('prop-types');
 
 
 class DownloadInfo extends React.Component {
@@ -25,8 +26,8 @@ class DownloadInfo extends React.Component {
 }
 
 DownloadInfo.propTypes = {
-    isDownloading: React.PropTypes.bool.isRequired,
-    chapters: React.PropTypes.array.isRequired,
+    isDownloading: PropTypes.bool.isRequired,
+    chapters: PropTypes.array.isRequired,
 };
 
 module.exports = DownloadInfo;

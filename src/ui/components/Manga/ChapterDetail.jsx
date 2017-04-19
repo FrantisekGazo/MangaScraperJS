@@ -1,6 +1,7 @@
 "use strict";
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const IconButton = require('material-ui/IconButton').default;
 const IconDownload = require('material-ui/svg-icons/file/file-download').default;
 const IconShow = require('material-ui/svg-icons/file/folder-open').default;
@@ -38,8 +39,8 @@ class ChapterDetail extends React.Component {
 }
 
 ChapterDetail.propTypes = {
-    chapter: React.PropTypes.object.isRequired,
-    onDownloadClick: React.PropTypes.func.isRequired,
+    chapter: PropTypes.object.isRequired,
+    onDownloadClick: PropTypes.func.isRequired,
 };
 
 module.exports = ChapterDetail;
