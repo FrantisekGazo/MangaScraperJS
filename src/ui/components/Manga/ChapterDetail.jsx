@@ -14,25 +14,25 @@ const DownloadStatusCode = require('../../../model/DownloadStatusCode');
 class ChapterDetail extends React.Component {
 
     render() {
-        const { chapter, onDownloadClick } = this.props;
-
-        let statusNode = chapter.status.msg;
-        if (chapter.status.code === DownloadStatusCode.DONE) {
-            statusNode = (
-                <div>
-                    Ready
-                    <IconButton onTouchTap={() => FileService.showFileInDirectory(chapter.status.msg)}><IconShow/></IconButton>
-                    <IconButton onTouchTap={() => FileService.openFile(chapter.status.msg)}><IconOpen/></IconButton>
-                </div>
-            );
-        }
+        const {chapter, onDownloadClick} = this.props;
 
         return (
             <div>
                 {chapter.title}
-                <IconButton onTouchTap={() => onDownloadClick(chapter.id)}><IconDownload/></IconButton>
-                <br/>
-                {statusNode}
+
+                {
+                    (chapter.status.code === DownloadStatusCode.DONE) ? (
+                        <span>
+                            <IconButton onTouchTap={() => FileService.showFileInDirectory(chapter.status.msg)}><IconShow/></IconButton>
+                            <IconButton onTouchTap={() => FileService.openFile(chapter.status.msg)}><IconOpen/></IconButton>
+                        </span>
+                    ) : (
+                        <span>
+                            <IconButton onTouchTap={() => onDownloadClick(chapter.id)}><IconDownload/></IconButton>
+                            {chapter.status.msg}
+                        </span>
+                    )
+                }
             </div>
         );
     }
