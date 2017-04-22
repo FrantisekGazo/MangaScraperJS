@@ -5,7 +5,4 @@ const SearchLogic = require('./SearchLogic');
 const MangaLogic = require('./MangaLogic');
 
 
-module.exports = [
-    ...SearchLogic,
-    ...MangaLogic,
-];
+module.exports = SearchLogic.concat(MangaLogic);

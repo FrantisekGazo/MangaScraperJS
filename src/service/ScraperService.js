@@ -62,20 +62,25 @@ function scrapeChapterPageImageUrl(pageUrl) {
 function scrapeChapterPages(startUrl, progress) {
     return scrapeChapterPageUrls(startUrl)
         .then(pageUrls => {
-            // console.log('page urls:', pageUrls);
             let imageUrls = [];
 
+            // prepare scrappers for all page images
             const scrapers = pageUrls.map((pageUrl) => () => {
-                return scrapeChapterPageImageUrl(pageUrl).then((imageUrl) => {
-                    imageUrls.push(imageUrl);
-                    progress(`Loading page ${imageUrls.length}/${pageUrls.length}`);
-                });
+                return promiseWithDelay(scrapeChapterPageImageUrl(pageUrl), 100)
+                // return promiseWithRetry(scrapeChapterPageImageUrl(pageUrl), 10, 100)
+                    .then((imageUrl) => {
+                        imageUrls.push(imageUrl);
+                        progress(`Loading page ${imageUrls.length}/${pageUrls.length}`);
+                    });
             });
 
-            return scrapers.reduce((p, fn) => p.then(fn), Promise.resolve())
+            // scrape all images sequentially
+            const scrapeAllImageUrls = scrapers.reduce((p, fn) => p.then(fn), Promise.resolve());
+
+            return scrapeAllImageUrls
                     .then(() => {
                         if (pageUrls.length === imageUrls.length) {
-                            // console.log('image urls:', imageUrls);
+                            // keep only real images
                             const cleanImageUrls = imageUrls.filter(url => {
                                 if (url === null || url === undefined) return false;
                                 if (url.indexOf('.jpg') === -1) return false;
@@ -177,6 +182,46 @@ function scrapeSearch(title) {
                 resolve(result.list);
             }
         });
+    });
+}
+
+function promiseWithDelay(promise, timeout) {
+    return new Promise((resolve, reject) => {
+        promise.then((result) => {
+            setTimeout(() => {
+                resolve(result);
+            }, timeout);
+        }).catch((err) => {
+            setTimeout(() => {
+                reject(err);
+            }, timeout);
+        });
+    });
+}
+
+function promiseWithRetry(promise, max, timeout) {
+    // console.log("promiseWithRetry()", promise, max, timeout);
+    return new Promise((resolve, reject) => {
+        promiseWithDelay(promise, timeout)
+            .then((result) => {
+                // console.log("finished on 1st try");
+                resolve(result);
+            })
+            .catch((err) => {
+                const newMax = (max - 1);
+                if (newMax > 0) {
+                    // console.log("failed " + newMax + " tries left");
+                    promiseWithRetry(promise, newMax, timeout * 2)
+                        .then((result) => {
+                            resolve(result);
+                        })
+                        .catch((err) => {
+                            reject(err);
+                        });
+                } else {
+                    reject(err);
+                }
+            });
     });
 }
 
