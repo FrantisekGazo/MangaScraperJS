@@ -29,7 +29,8 @@ const style = {
         position: 'absolute',
         top: '200px',
         left: '50%',
-        transform: 'translate(-50%)'
+        transform: 'translate(-50%)',
+        paddingBottom: '10px'
     },
     progress: {
         position: 'relative',
