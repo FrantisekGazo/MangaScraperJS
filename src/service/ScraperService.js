@@ -60,7 +60,7 @@ function scrapeChapterPageImageUrl(pageUrl) {
 }
 
 function scrapeChapterPages(startUrl, progress) {
-    return scrapeChapterPageUrls(startUrl)
+    return promiseWithDelay(scrapeChapterPageUrls(startUrl), 200)
         .then(pageUrls => {
             let imageUrls = [];
 
